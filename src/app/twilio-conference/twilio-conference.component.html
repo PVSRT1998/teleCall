@@ -1,0 +1,51 @@
+<div class="main-container">
+    <div class="video-container">
+        <div class="card1">
+            <div id="room" #video>
+                <div id="participants">
+
+                </div>
+            </div>
+        </div>
+        <div class="card2 flex-column justify-content-center">
+            <div>
+                <span class="media-device" (click)="chatWindow()">
+                    <i class="bi bi-people-fill active" *ngIf="showChat"></i>
+                    <i class="bi bi-people-fill" *ngIf="!showChat"></i>
+                </span>
+                <span class="media-device" (click)="participantsWindow()">
+                    <i class="bi bi-chat-left-text-fill active" *ngIf="showParticipants"></i>
+                    <i class="bi bi-chat-left-text-fill" *ngIf="!showParticipants"></i>
+                </span>
+                <span class="media-device bg-danger" (click)="leaveCall()">
+                    <i class="bi bi-telephone-fill" *ngIf="true"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="chatbotPopup" *ngIf="showChat">
+        <div class="card h-100  ">
+            <div class="card-header">
+                Chat
+            </div>
+            <div class="card-body">
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+    </div>
+    <div class="chatbotPopup" *ngIf="showParticipants">
+        <div class="card h-100  ">
+            <div class="card-header">
+                Participants
+            </div>
+            <div class="card-body">
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+    </div>
+    <!-- <app-twilio-chat class="chat-container" *ngIf="false"></app-twilio-chat> -->
+</div>

@@ -1,0 +1,52 @@
+<div>
+    <h1>Welcome</h1>
+
+    <div class="card w-25 text-center shadow p-3 mb-5 bg-body rounded d-flex flex-column justify-content-center">
+        <div class="text-center" *ngIf="!allDevicesAllowed">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+        <div *ngIf="allDevicesAllowed">
+            <div class="card-header">
+                <h4>Join Meeting</h4>
+            </div>
+            <div class="card-body">
+                <div class="mt-3">
+                    <input type="text" class="form-control" placeholder="Enter Name or Phone Numer" required [(ngModel)]="name" (keypress)="submitBtnActive($event)" />
+                </div>
+                <div class="mt-3">
+                    <div class="row mt-2">
+                        <div class="col m-2">
+                            <span class="media-device">
+                                <i class="bi bi-wifi active" *ngIf="internetActive"></i>
+                                <i class="bi bi-wifi-off" *ngIf="!internetActive"></i>
+                            </span>
+                        </div>
+                        <div class="col m-2">
+                            <span class="media-device">
+                                <i class="bi bi-camera-video active" *ngIf="cameraActive"></i>
+                                <i class="bi bi-camera-video-off" *ngIf="!cameraActive"></i>
+                            </span>
+                        </div>
+                        <div class="col m-2">
+                            <span class="media-device">
+                                <i class="bi bi-mic active" *ngIf="audioActive"></i>
+                                <i class="bi bi-mic-mute" *ngIf="!audioActive"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">By clicking "Join", you agree to our
+              <u href="#" class="link-primary">Terms of Services</u> and
+              <u href="#" class="link-primary">Privacy Statement</u>.</small>
+                </div>
+                <div class="mt-5">
+                    <button type="submit" class="btn btn-primary w-100" [disabled]="!name" (click)="joinMeet()">Join</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
