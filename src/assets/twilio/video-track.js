@@ -38,6 +38,7 @@ async function startVideoChat(roomName, token) {
         video: { width: 1215 },
         audio: false,
     });
+    console.log(room);
     participantConnected(room.localParticipant);
     room.participants.forEach(participantConnected);
 

@@ -12,7 +12,7 @@ export class JoinPageComponent implements OnInit {
 
   constructor(public router: Router, public twilioVideoService: TwilioVideoService) { }
 
-  name: any;
+  joinForm: any = {};
   internetActive: boolean | undefined;
   cameraActive: boolean | undefined;
   audioActive: boolean | undefined;
@@ -39,9 +39,8 @@ export class JoinPageComponent implements OnInit {
   }
 
   joinMeet() {
-    if (this.audioActive && this.cameraActive && this.internetActive) {
+    if (this.allDevicesAllowed) {
       this.twilioVideoService.getAccessToken({ identity: 'patient' }).subscribe((data) => {
-        console.log(data);
         this.router.navigate(['twilio-conference'], {
           state: data
         });
@@ -49,7 +48,6 @@ export class JoinPageComponent implements OnInit {
     } else {
       return alert("check you connections");
     }
-
   }
 
   submitBtnActive(event: any) {
