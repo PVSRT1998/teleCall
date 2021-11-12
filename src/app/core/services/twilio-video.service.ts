@@ -13,33 +13,19 @@ export class TwilioVideoService {
 
   isAuthenticate = false;
 
-  getAccessToken(routerParams?: Params) {
-    let queryParams: Params = {};
-    if (routerParams) {
-      queryParams = this.setParameter(routerParams);
-    };
+  getAccessToken(data:any) {
+
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
     });
     
-    let accessToken = this.http.get(environment.url + '/token', { headers: headers, params: queryParams });
+    let accessToken = this.http.post(environment.url + '/TwilioIntegration/GetVideoToken', data,{headers: headers});
     if(accessToken){
       this.isAuthenticate = true;
     } else {
       this.isAuthenticate = false;
     }
     return accessToken;
-  }
-
-  private setParameter(routerParams: Params): HttpParams {
-    let queryParams = new HttpParams();
-    for (const key in routerParams) {
-      console.log(key);
-      if (routerParams.hasOwnProperty(key)) {
-        queryParams = queryParams.set(key, routerParams[key]);
-      }
-    }
-    return queryParams;
   }
 }

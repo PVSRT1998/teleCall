@@ -40,7 +40,7 @@ export class JoinPageComponent implements OnInit {
 
   joinMeet() {
     if (this.allDevicesAllowed) {
-      this.twilioVideoService.getAccessToken({ emailId: this.joinForm.emailOrMobile ,identity: 'patient' }).subscribe((data) => {
+      this.twilioVideoService.getAccessToken({ emailId: this.joinForm.emailOrMobile ,roomname: 'abc-abc2324-2234555' }).subscribe((data) => {
         this.router.navigate(['twilio-conference'], {
           state: data
         });

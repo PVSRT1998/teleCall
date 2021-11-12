@@ -4,11 +4,11 @@
 
 export const environment = {
   production: false,
-  url: 'http://localhost:1337',
+  url: 'https://api.dev.cosmosclinical.com/api',
   dummyApi: 'https://gorest.co.in/public/v1/users'
 };
 
-/*
+/* TwilioIntegration/GetVideoToken
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
  *
