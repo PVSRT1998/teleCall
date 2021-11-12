@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  url: 'http://localhost:1337'
+  url: 'https://api.dev.cosmosclinical.com/api',
 };
