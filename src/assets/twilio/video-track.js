@@ -1,44 +1,36 @@
 let room;
-console.log(Twilio);
-
 let Video = Twilio.Video;
-
-async function twilioVideo() {
-    let createVideo = await new Promise((resolve, reject) => {
-        Video.createLocalTracks({
-                audio: true,
-                video: { width: 1215 }
-            })
-            .then((track) => {
-                resolve(track);
-            })
-            .catch((error) => {
-                reject(error);
-            })
-    });
-
-    return createVideo;
-};
 
 async function joinRoom(responseData) {
 
     let roomName = await responseData.room;
     let token = await responseData.token;
 
-    startVideoChat(roomName, token);
+    // let roomName = "abc-123-456";
+    // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJpc3MiOiJTS2VmNTU0ZjBhMDhkYzU5YmNmNDA0ZmZlODRiY2M2YWYzIiwiZXhwIjoxNjM2NTY4Mjc0LCJqdGkiOiJTS2VmNTU0ZjBhMDhkYzU5YmNmNDA0ZmZlODRiY2M2YWYzLTE2MzY1NjQ2NzQiLCJzdWIiOiJBQzE3NDg5YjdjOTVmMmNjNWYzZTMyNTY5OWQ4MmVlNGUyIiwiZ3JhbnRzIjp7ImlkZW50aXR5IjoiZ2FqamFAZ21haWwuY29tIiwidmlkZW8iOnsicm9vbSI6ImFiYzIzNC00NTY3OC00MzIzNDUifX19.T5mYbitXjwtRkXul5VrYhuLiaZWxBUA8ZOuqcbDbgWg";
+
+    let requiredRoom = await startVideoChat(roomName, token);
+    return requiredRoom;
 
 };
 
 async function startVideoChat(roomName, token) {
     var roomSpan = document.getElementById("room");
 
-    console.log(roomSpan);
     room = await Video.connect(token, {
         room: roomName,
-        video: { width: 1215 },
-        audio: false,
+        video: { width: 720 },
+        audio: true,
+        bandwidthProfile: {
+            video: {
+                mode: 'collaboration',
+                dominantSpeakerPriority: 'high'
+            }
+        },
+        dominantSpeaker: true,
+        preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
+        networkQuality: { local: 1, remote: 1 }
     });
-    console.log(room);
     participantConnected(room.localParticipant);
     room.participants.forEach(participantConnected);
 
@@ -48,6 +40,8 @@ async function startVideoChat(roomName, token) {
     room.on("participantDisconnected", participantDisconnected);
     window.addEventListener("beforeunload", tidyUp(room));
     window.addEventListener("pagehide", tidyUp(room));
+
+    return room;
 }
 
 function participantConnected(participant) {

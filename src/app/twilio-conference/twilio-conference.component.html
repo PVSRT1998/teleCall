@@ -1,5 +1,6 @@
 <div class="main-container">
     <div class="video-container">
+        <!-- width: calc(100% - 320px) -->
         <div class="card1">
             <div id="room" #video>
                 <div id="participants">
@@ -7,15 +8,15 @@
                 </div>
             </div>
         </div>
-        <div class="card2 flex-column justify-content-center">
+        <div class="card2">
             <div>
-                <span class="media-device" (click)="chatWindow()">
-                    <i class="bi bi-people-fill active" *ngIf="showChat"></i>
-                    <i class="bi bi-people-fill" *ngIf="!showChat"></i>
-                </span>
                 <span class="media-device" (click)="participantsWindow()">
-                    <i class="bi bi-chat-left-text-fill active" *ngIf="showParticipants"></i>
-                    <i class="bi bi-chat-left-text-fill" *ngIf="!showParticipants"></i>
+                    <i class="bi bi-people-fill activeReq" *ngIf="showParticipants"></i>
+                    <i class="bi bi-people-fill" *ngIf="!showParticipants"></i>
+                </span>
+                <span class="media-device" (click)="chatWindow()">
+                    <i class="bi bi-chat-left-text-fill activeReq" *ngIf="showChat"></i>
+                    <i class="bi bi-chat-left-text-fill" *ngIf="!showChat"></i>
                 </span>
                 <span class="media-device bg-danger" (click)="leaveCall()">
                     <i class="bi bi-telephone-fill" *ngIf="true"></i>
@@ -40,10 +41,10 @@
             <div class="card-header">
                 Participants
             </div>
-            <div class="card-body">
-            </div>
-            <div class="card-footer">
-
+            <div class="card-body" *ngIf="allParticipants.length >= 1">
+                <div *ngFor="let participant of allParticipants">
+                    <span class="fw-bold text-capitalize">{{participant}}</span>
+                </div>
             </div>
         </div>
     </div>

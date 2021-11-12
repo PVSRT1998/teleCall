@@ -1,20 +1,23 @@
-.main-container {
+/* .main-container {
     overflow: hidden;
+} */
+
+.video-container {
+    width: 100%;
+    min-height: 100%;
+    background-color: black;
 }
 
 .card1 {
     text-align: center;
-    max-height: 100vh;
-    position: fixed !important;
-    width: 100vw;
+    height: 85vh;
+    width: 100%;
 }
 
 .card2 {
     text-align: center;
-    position: fixed;
     bottom: 0;
     background: rgba(15, 15, 15, 0.5);
-    width: 100vw;
     min-width: 50vw;
     padding: 20px;
 }
@@ -68,13 +71,12 @@ i {
     max-width: 320px;
     width: 320px;
     height: 100vh;
-    border: solid 1px;
     position: absolute;
     right: 0px;
     bottom: 0px;
-    z-index: 100;
+    /* z-index: 100; */
 }
 
-.active {
+.activeReq {
     color: white;
 }

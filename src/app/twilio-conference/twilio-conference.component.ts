@@ -1,9 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-declare const twilioVideo: any;
 declare const joinRoom: any;
-declare const chatClientCreate: any;
-declare const room: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -11,64 +8,68 @@ declare const room: any;
   styleUrls: ['./twilio-conference.component.css']
 })
 export class TwilioConferenceComponent implements OnInit {
-  @ViewChild('video', { static: true }) video: ElementRef<HTMLVideoElement> | undefined;
 
-  routerData: any;
-  constructor(public router: Router) {
-    console.log(this.router.getCurrentNavigation()?.extras.state);
+  constructor(public router: Router, public element: ElementRef) {
     this.routerData = this.router.getCurrentNavigation()?.extras.state;
-   }
+  }
 
-  chatTrack: boolean = false;
   showParticipants = false;
   showChat = false;
-  // localTracks: any;
-  ngOnInit(): void {
-    // twilioVideo();
-    // this.testClick();
-    joinRoom(this.routerData);
-    // chatClientCreate(this.routerData);
+  routerData: any;
+  room: any;
+  allParticipants: any = [];
+
+  async ngOnInit(): Promise<void> {
+    this.room = await joinRoom(this.routerData);
+    this.participantsFilter();
+  }
+
+  participantsFilter() {
+    if (this.room) {
+      console.log(this.room);
+      this.allParticipants.push(this.room.localParticipant.identity);
+      this.room.participants.forEach((element: any) => {
+        this.allParticipants.push(element.value.identity);
+      });
+    }
+  }
+
+  async leaveCall() {
+    await this.room.localParticipant.tracks.forEach((publication: { track: any; }) => {
+      console.log('parr', publication);
+      const track = publication.track;
+      // stop releases the media element from the browser control
+      // which is useful to turn off the camera light, etc.
+      track.stop();
+      const elements = track.detach();
+      elements.forEach((element: { remove: () => any; }) => element.remove());
+    });
+    await this.room.disconnect();
+    this.router.navigateByUrl('/');
   }
 
   chatWindow() {
     this.showParticipants = false;
-    this.showChat = (this.showChat)? false : true;
+    this.showChat = (this.showChat) ? false : true;
+    this.chatOrParticipantContainer();
   };
-
-  async leaveCall() {
-      await room.localParticipant.tracks.forEach((publication: { track: any; }) => {
-          console.log('parr', publication);
-          const track = publication.track;
-          // stop releases the media element from the browser control
-          // which is useful to turn off the camera light, etc.
-          track.stop();
-          const elements = track.detach();
-          elements.forEach((element: { remove: () => any; }) => element.remove());
-      });
-      await room.disconnect();
-      this.router.navigateByUrl('/');
-  }
 
   participantsWindow() {
     this.showChat = false;
-    this.showParticipants = (this.showParticipants)? false : true;
+    this.showParticipants = (this.showParticipants) ? false : true;
+    this.chatOrParticipantContainer();
   };
 
-  async testClick() {
-    let localTracks = new Array(await twilioVideo());
-    console.log(localTracks);
-    let videoTrack = localTracks.forEach(element => {
-      
-    });
-    // console.log(videoTrack);
-    // this.video?.nativeElement.appendChild(this.videoTrack.attach());
+  chatOrParticipantContainer() {
+    let videoContainer = this.element.nativeElement.querySelector('.video-container');
+
+    if (this.showParticipants || this.showChat) {
+      videoContainer.style.width = "calc(100% - 320px)";
+      videoContainer.style.transition = "all 0.5s ease";
+    } else {
+      videoContainer.style.width = "100%";
+      videoContainer.style.transition = "all 0.5s ease";
+    }
   }
 
-  participantsBlock() {
-    this.chatTrack = false;
-  }
-
-  chatBlock() {
-    this.chatTrack = true;
-  }
 }
