@@ -10,13 +10,15 @@ import { JoinPageComponent } from './join-page/join-page.component';
 import { TwilioConferenceComponent } from './twilio-conference/twilio-conference.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TwilioChatComponent } from './twilio-chat/twilio-chat.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     JoinPageComponent,
     TwilioConferenceComponent,
-    TwilioChatComponent
+    TwilioChatComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

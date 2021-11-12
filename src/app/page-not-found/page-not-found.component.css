@@ -1,0 +1,23 @@
+.main-container {
+    min-height: 100vh;
+    font-family: 'emoji';
+}
+
+.not-found-container {
+    text-align: center;
+}
+
+.not-found-container p {
+    font-size: 72px;
+}
+
+.not-found-container h1 {
+    padding-top: 56px;
+    color: rgb(194, 21, 21);
+    font-size: 60px;
+}
+
+.not-found-container span i {
+    font-size: 120px;
+    color: rgb(252, 50, 50);
+}

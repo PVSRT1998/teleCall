@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 
 declare const myTest: any;
@@ -10,8 +10,15 @@ declare const myTest: any;
 })
 export class JoinPageComponent implements OnInit {
 
-  constructor(public router: Router, public twilioVideoService: TwilioVideoService) { }
+  constructor(public router: Router, public twilioVideoService: TwilioVideoService) {
+    router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.roomName = event.url.split('/').pop();
+      };
+    });
+  }
 
+  roomName: any;
   joinForm: any = {};
   internetActive: boolean | undefined;
   cameraActive: boolean | undefined;
@@ -33,14 +40,14 @@ export class JoinPageComponent implements OnInit {
       this.cameraActive = false;
       this.allDevicesAllowed = false;
     }
-    await stream.getTracks().forEach(function(track) {
+    await stream.getTracks().forEach(function (track) {
       track.stop();
     });
   }
 
   joinMeet() {
     if (this.allDevicesAllowed) {
-      this.twilioVideoService.getAccessToken({ emailId: this.joinForm.emailOrMobile ,roomname: 'abc-abc2324-2234555' }).subscribe((data) => {
+      this.twilioVideoService.getAccessToken({ emailId: this.joinForm.emailOrMobile, roomname: this.roomName }).subscribe((data) => {
         this.router.navigate(['twilio-conference'], {
           state: data
         });
