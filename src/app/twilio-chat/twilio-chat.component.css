@@ -40,12 +40,10 @@ input:focus {
     color: #d4d4d4;
 }
 
-.chat-heade {
+.chat-header {
     width: 100%;
-    position: absolute;
-    border-top: 1px solid;
+    border-bottom: 1px solid;
     border-color: lightsteelblue;
-    top: 0;
     padding: 10px;
 }
 
@@ -64,11 +62,13 @@ input:focus {
 }
 
 .sender-msg {
-    position: absolute;
-    right: 10px;
+    text-align: right;
+    margin-right: 20px;
+    padding: 2px;
 }
 
 .recieve-msg {
-    position: absolute;
-    left: 10px;
+    text-align: left;
+    margin-right: 20px;
+    padding: 2px;
 }

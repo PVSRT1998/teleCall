@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-declare const dataTrack: any;
-declare const allMsgs: any;
+import { Component, OnChanges, OnInit, SimpleChange } from '@angular/core';
+declare const setSenderMsg: any;
+declare const receiveMsg: any;
 
 @Component({
   selector: 'app-twilio-chat',
@@ -12,8 +12,8 @@ export class TwilioChatComponent implements OnInit {
   constructor() { }
 
   messageInput: any;
-  allReqMsgs: any = [];
-
+  recieve = receiveMsg;
+  
   ngOnInit(): void {
   }
 
@@ -21,13 +21,12 @@ export class TwilioChatComponent implements OnInit {
     this.messageInput = "";
     //  Creates a Local Data Track
     if (message) {
-      let msg = {
+      let Sendermsg = {
         status: 'sender-msg',
         message: message,
         timeStamp: Date.now()
       };
-      this.allReqMsgs.push(msg);
-      dataTrack.send(JSON.stringify(msg));
+      await setSenderMsg(Sendermsg);
     }
   }
 }

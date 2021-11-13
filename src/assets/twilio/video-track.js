@@ -1,7 +1,7 @@
 let room;
 let Video = Twilio.Video;
 let dataTrack = new Twilio.Video.LocalDataTrack();
-let allMsgs = [];
+let receiveMsg = [];
 
 async function joinRoom(responseData) {
 
@@ -61,10 +61,9 @@ function trackPublished(trackPublication, participant) {
             console.log(track);
 
             track.on('message', data => {
-                console.log(data);
-                let recieveMsg = JSON.parse(data);
-                recieveMsg.status = "recieve-msg";
-                allReqMsgs.push(recieveMsg);
+                let dataRecieved = JSON.parse(data);
+                dataRecieved.status = "recieve-msg";
+                receiveMsg.push(dataRecieved);
             });
         }
         if (track.kind === 'audio' || track.kind === 'video') {
@@ -89,3 +88,8 @@ function tidyUp(room) {
         }
     };
 };
+
+function setSenderMsg(sender) {
+    receiveMsg.push(sender);
+    dataTrack.send(JSON.stringify(sender));
+}

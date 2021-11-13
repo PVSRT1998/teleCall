@@ -3,8 +3,9 @@
         <header>Chat</header>
     </div>
     <div class="chat-body">
-        <div *ngFor="let msg of allReqMsgs">
+        <div *ngFor="let msg of recieve" id="chat-messages">
             <div class={{msg.status}}>{{msg.message}}</div>
+            <!-- {{recieve}} -->
         </div>
     </div>
     <div class="sendContainer">
