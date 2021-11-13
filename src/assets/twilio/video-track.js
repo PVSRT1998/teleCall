@@ -1,6 +1,7 @@
 let room;
 let Video = Twilio.Video;
 let dataTrack = new Twilio.Video.LocalDataTrack();
+let allMsgs = [];
 
 async function joinRoom(responseData) {
 
@@ -61,6 +62,9 @@ function trackPublished(trackPublication, participant) {
 
             track.on('message', data => {
                 console.log(data);
+                let recieveMsg = JSON.parse(data);
+                recieveMsg.status = "recieve-msg";
+                allReqMsgs.push(recieveMsg);
             });
         }
         if (track.kind === 'audio' || track.kind === 'video') {
@@ -85,12 +89,3 @@ function tidyUp(room) {
         }
     };
 };
-
-function getLocalDataTrack(message) {
-    // Creates a Local Data Track
-    dataTrack.send(message);
-    let dataTrackSender = document.getElementById("data-track");
-    let senderMessage = document.createElement("div");
-    senderMessage.innerText = message;
-    dataTrackSender.appendChild(senderMessage);
-}

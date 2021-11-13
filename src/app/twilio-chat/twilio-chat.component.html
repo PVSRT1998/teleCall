@@ -1,3 +1,16 @@
 <div>
-
+    <div class="chat-header">
+        <header>Chat</header>
+    </div>
+    <div class="chat-body">
+        <div *ngFor="let msg of allReqMsgs">
+            <div class={{msg.status}}>{{msg.message}}</div>
+        </div>
+    </div>
+    <div class="sendContainer">
+        <div style="display: inline-block;width: 75%">
+            <input class="mytext" class="form-control" placeholder="Type a message" (keyup.enter)="sendMessage(messageInput)" [(ngModel)]="messageInput" />
+        </div>
+        <button type="submit" class="btn btn-secondary" (click)="sendMessage(messageInput)">Send</button>
+    </div>
 </div>

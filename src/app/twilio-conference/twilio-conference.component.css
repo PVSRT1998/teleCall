@@ -1,6 +1,6 @@
-/* .main-container {
-    overflow: hidden;
-} */
+.main-container {
+    background-color: black;
+}
 
 .video-container {
     width: 100%;
@@ -67,14 +67,23 @@ i {
     transform: scaleX(-1); */
 }
 
-.chatbotPopup {
+.chatContainer {
     max-width: 320px;
     width: 320px;
-    height: 100vh;
+    height: 60%;
     position: absolute;
     right: 0px;
     bottom: 0px;
-    /* z-index: 100; */
+    z-index: 1;
+}
+
+.participantContainer {
+    max-width: 320px;
+    width: 320px;
+    height: 100%;
+    position: absolute;
+    right: 0px;
+    top: 0px;
 }
 
 .activeReq {

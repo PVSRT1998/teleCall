@@ -24,24 +24,12 @@
             </div>
         </div>
     </div>
-    <div class="chatbotPopup" *ngIf="showChat">
-        <div class="card h-100  ">
-            <div class="card-header">
-                Chat
-            </div>
-            <div class="card-body">
-                <div id="data-track"></div>
-                <div></div>
-            </div>
-            <div class="card-footer">
-                <span>
-                    <input type="text" class="form-control" placeholder="Message..." [(ngModel)]="messageInput"/>
-                </span>
-                <button type="button" class="btn btn-secondary sendButton" (click)="sendMessage(messageInput)">Send</button>
-            </div>
+    <div class="chatContainer" *ngIf="showChat">
+        <div class="card h-100 ">
+            <app-twilio-chat></app-twilio-chat>
         </div>
     </div>
-    <div class="chatbotPopup" *ngIf="showParticipants">
+    <div class="participantContainer" *ngIf="showParticipants">
         <div class="card h-100  ">
             <div class="card-header">
                 Participants

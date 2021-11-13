@@ -1,0 +1,74 @@
+.frame {
+    background: #e0e0de;
+    overflow: hidden;
+    padding: 0;
+}
+
+ul {
+    width: 100%;
+    list-style-type: none;
+    padding: 18px;
+    position: absolute;
+    bottom: 47px;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    /* overflow-y: scroll; */
+}
+
+input:focus {
+    outline: none;
+}
+
+::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: #d4d4d4;
+}
+
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #d4d4d4;
+}
+
+:-ms-input-placeholder {
+    /* IE 10+ */
+    color: #d4d4d4;
+}
+
+:-moz-placeholder {
+    /* Firefox 18- */
+    color: #d4d4d4;
+}
+
+.chat-heade {
+    width: 100%;
+    position: absolute;
+    border-top: 1px solid;
+    border-color: lightsteelblue;
+    top: 0;
+    padding: 10px;
+}
+
+.sendContainer {
+    width: 100%;
+    position: absolute;
+    border-top: 1px solid;
+    border-color: lightsteelblue;
+    bottom: 0;
+    padding: 10px;
+}
+
+.sendContainer button {
+    position: absolute;
+    right: 10px;
+}
+
+.sender-msg {
+    position: absolute;
+    right: 10px;
+}
+
+.recieve-msg {
+    position: absolute;
+    left: 10px;
+}

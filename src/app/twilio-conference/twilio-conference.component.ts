@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 declare const joinRoom: any;
-declare const getLocalDataTrack: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -57,13 +56,12 @@ export class TwilioConferenceComponent implements OnInit {
   }
 
   chatWindow() {
-    this.showParticipants = false;
+
     this.showChat = (this.showChat) ? false : true;
     this.chatOrParticipantContainer();
   };
 
   participantsWindow() {
-    this.showChat = false;
     this.showParticipants = (this.showParticipants) ? false : true;
     this.chatOrParticipantContainer();
   };
@@ -77,13 +75,6 @@ export class TwilioConferenceComponent implements OnInit {
     } else {
       videoContainer.style.width = "100%";
       videoContainer.style.transition = "all 0.5s ease";
-    }
-  }
-
-  async sendMessage(message: any) {
-    console.log(message);
-    //  Creates a Local Data Track
-    await getLocalDataTrack(message);
-  }
-
+    };
+  };
 }
