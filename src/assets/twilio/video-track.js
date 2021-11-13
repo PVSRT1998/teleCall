@@ -1,5 +1,6 @@
 let room;
 let Video = Twilio.Video;
+let dataTrack = new Twilio.Video.LocalDataTrack();
 
 async function joinRoom(responseData) {
 
@@ -12,7 +13,6 @@ async function joinRoom(responseData) {
 
 async function startVideoChat(roomName, token) {
     const localTracks = await Twilio.Video.createLocalTracks();
-    let dataTrack = new Twilio.Video.LocalDataTrack();
 
     let allTracks = localTracks.concat(dataTrack);
     room = await Video.connect(token, {
@@ -45,14 +45,7 @@ function participantConnected(participant) {
     });
 
     participant.on('trackPublished', trackPublished);
-    participant.on('trackAdded', track => {
-        console.log(`Participant "${participant.identity}" added ${track.kind} Track ${track.sid}`);
-        if (track.kind === 'data') {
-            track.on('message', data => {
-                console.log(data);
-            });
-        }
-    });
+
 }
 
 function participantDisconnected(participant) {
@@ -69,7 +62,8 @@ function trackPublished(trackPublication, participant) {
             track.on('message', data => {
                 console.log(data);
             });
-        } else {
+        }
+        if (track.kind === 'audio' || track.kind === 'video') {
             const e1 = document.getElementById(participant.sid);
             e1.appendChild(track.attach());
         }
@@ -94,10 +88,7 @@ function tidyUp(room) {
 
 function getLocalDataTrack(message) {
     // Creates a Local Data Track
-    let localDataTrack = Video.LocalDataTrack();
-    // Publishing the local Data Track to the Room
-    room.localParticipant.publishTrack(localDataTrack);
-    localDataTrack.send(message);
+    dataTrack.send(message);
     let dataTrackSender = document.getElementById("data-track");
     let senderMessage = document.createElement("div");
     senderMessage.innerText = message;

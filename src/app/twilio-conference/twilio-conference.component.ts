@@ -45,9 +45,11 @@ export class TwilioConferenceComponent implements OnInit {
       const track = publication.track;
       // stop releases the media element from the browser control
       // which is useful to turn off the camera light, etc.
-      track.stop();
-      const elements = track.detach();
-      elements.forEach((element: { remove: () => any; }) => element.remove());
+      if (track === 'video' || track === 'audio') {
+        track.stop();
+        const elements = track.detach();
+        elements.forEach((element: { remove: () => any; }) => element.remove());
+      }
     });
     await this.room.disconnect();
     this.twilioService.isAuthenticate = false;
