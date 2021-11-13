@@ -22,3 +22,12 @@ i {
 span .active {
     color: green;
 }
+
+.room-name-container {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.room-name-container span {
+    font-weight: bold;
+}

@@ -30,9 +30,14 @@
                 Chat
             </div>
             <div class="card-body">
+                <div id="data-track"></div>
+                <div></div>
             </div>
             <div class="card-footer">
-
+                <span>
+                    <input type="text" class="form-control" placeholder="Message..." [(ngModel)]="messageInput"/>
+                </span>
+                <button type="button" class="btn btn-secondary sendButton" (click)="sendMessage(messageInput)">Send</button>
             </div>
         </div>
     </div>
@@ -48,5 +53,4 @@
             </div>
         </div>
     </div>
-    <!-- <app-twilio-chat class="chat-container" *ngIf="false"></app-twilio-chat> -->
 </div>

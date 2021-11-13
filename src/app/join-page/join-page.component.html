@@ -12,7 +12,8 @@
                 <h4>Join Meeting</h4>
             </div>
             <div class="card-body">
-                {{roomName}}
+                <div class="room-name-container">
+                    <span>Room Name:</span> {{roomName}}</div>
                 <form name="form" (ngSubmit)="f.form.valid && joinMeet()" #f="ngForm" novalidate>
                     <div class="form-group">
                         <input type="text" class="form-control" name="emailOrMobile" placeholder="Email ID or Mobile Number" [(ngModel)]="joinForm.emailOrMobile" #emailOrMobile="ngModel" [ngClass]="{ 'is-invalid': f.submitted && emailOrMobile.invalid }" pattern="^([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4})|((\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4})$"

@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { TwilioVideoService } from '../core/services/twilio-video.service';
 declare const joinRoom: any;
+declare const getLocalDataTrack: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -9,7 +11,7 @@ declare const joinRoom: any;
 })
 export class TwilioConferenceComponent implements OnInit {
 
-  constructor(public router: Router, public element: ElementRef) {
+  constructor(public router: Router, public element: ElementRef, public twilioService: TwilioVideoService) {
     this.routerData = this.router.getCurrentNavigation()?.extras.state;
   }
 
@@ -18,6 +20,7 @@ export class TwilioConferenceComponent implements OnInit {
   routerData: any;
   room: any;
   allParticipants: any = [];
+  messageInput: any;
 
   async ngOnInit(): Promise<void> {
     this.room = await joinRoom(this.routerData);
@@ -29,7 +32,9 @@ export class TwilioConferenceComponent implements OnInit {
       console.log(this.room);
       this.allParticipants.push(this.room.localParticipant.identity);
       this.room.participants.forEach((element: any) => {
-        this.allParticipants.push(element.value.identity);
+        console.log(element);
+        // console.log(element.value);
+        this.allParticipants.push(element.identity);
       });
     }
   }
@@ -45,6 +50,7 @@ export class TwilioConferenceComponent implements OnInit {
       elements.forEach((element: { remove: () => any; }) => element.remove());
     });
     await this.room.disconnect();
+    this.twilioService.isAuthenticate = false;
     this.router.navigateByUrl('/');
   }
 
@@ -70,6 +76,12 @@ export class TwilioConferenceComponent implements OnInit {
       videoContainer.style.width = "100%";
       videoContainer.style.transition = "all 0.5s ease";
     }
+  }
+
+  async sendMessage(message: any) {
+    console.log(message);
+    //  Creates a Local Data Track
+    await getLocalDataTrack(message);
   }
 
 }

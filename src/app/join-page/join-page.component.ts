@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 
-declare const myTest: any;
 @Component({
   selector: 'app-join-page',
   templateUrl: './join-page.component.html',
@@ -47,7 +46,7 @@ export class JoinPageComponent implements OnInit {
 
   joinMeet() {
     if (this.allDevicesAllowed) {
-      this.twilioVideoService.getAccessToken({ emailId: this.joinForm.emailOrMobile, roomname: this.roomName }).subscribe((data) => {
+      this.twilioVideoService.getAccessToken({ emailId: this.joinForm.emailOrMobile, id: this.roomName }).subscribe((data) => {
         this.router.navigate(['twilio-conference'], {
           state: data
         });

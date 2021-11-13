@@ -80,3 +80,11 @@ i {
 .activeReq {
     color: white;
 }
+
+.card-footer span {
+    display: inline-block;
+}
+
+.sendButton {
+    float: right;
+}

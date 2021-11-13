@@ -6,17 +6,11 @@ async function joinRoom(responseData) {
     let roomName = await responseData.room;
     let token = await responseData.token;
 
-    // let roomName = "abc-123-456";
-    // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJpc3MiOiJTS2VmNTU0ZjBhMDhkYzU5YmNmNDA0ZmZlODRiY2M2YWYzIiwiZXhwIjoxNjM2NTY4Mjc0LCJqdGkiOiJTS2VmNTU0ZjBhMDhkYzU5YmNmNDA0ZmZlODRiY2M2YWYzLTE2MzY1NjQ2NzQiLCJzdWIiOiJBQzE3NDg5YjdjOTVmMmNjNWYzZTMyNTY5OWQ4MmVlNGUyIiwiZ3JhbnRzIjp7ImlkZW50aXR5IjoiZ2FqamFAZ21haWwuY29tIiwidmlkZW8iOnsicm9vbSI6ImFiYzIzNC00NTY3OC00MzIzNDUifX19.T5mYbitXjwtRkXul5VrYhuLiaZWxBUA8ZOuqcbDbgWg";
-
     let requiredRoom = await startVideoChat(roomName, token);
     return requiredRoom;
-
 };
 
 async function startVideoChat(roomName, token) {
-    var roomSpan = document.getElementById("room");
-
     room = await Video.connect(token, {
         room: roomName,
         video: { width: 720 },
@@ -29,7 +23,8 @@ async function startVideoChat(roomName, token) {
         },
         dominantSpeaker: true,
         preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
-        networkQuality: { local: 1, remote: 1 }
+        networkQuality: { local: 1, remote: 1 },
+        // tracks: [new Video.LocalVideoTrack(), new Video.LocalAudioTrack(), new Video.LocalDataTrack()]
     });
     participantConnected(room.localParticipant);
     room.participants.forEach(participantConnected);
@@ -56,7 +51,15 @@ function participantConnected(participant) {
         trackPublished(publication, participant);
     });
 
-    participant.on('trackPublished', trackPublished)
+    participant.on('trackPublished', trackPublished);
+    // participant.on('trackAdded', track => {
+    //     console.log(`Participant "${participant.identity}" added ${track.kind} Track ${track.sid}`);
+    //     if (track.kind === 'data') {
+    //         track.on('message', data => {
+    //             console.log(data);
+    //         });
+    //     }
+    // });
 }
 
 function participantDisconnected(participant) {
@@ -66,9 +69,17 @@ function participantDisconnected(participant) {
 }
 
 function trackPublished(trackPublication, participant) {
-    const e1 = document.getElementById(participant.sid);
     const trackSubscribed = (track) => {
-        e1.appendChild(track.attach());
+        if (track.kind === 'data') {
+            console.log(track);
+
+            track.on('message', data => {
+                console.log(data);
+            });
+        } else {
+            const e1 = document.getElementById(participant.sid);
+            e1.appendChild(track.attach());
+        }
     };
     if (trackPublication.track) {
         trackSubscribed(trackPublication.track)
@@ -87,3 +98,15 @@ function tidyUp(room) {
         }
     };
 };
+
+function getLocalDataTrack(message) {
+    // Creates a Local Data Track
+    let localDataTrack = new Twilio.Video.LocalDataTrack();
+    // Publishing the local Data Track to the Room
+    room.localParticipant.publishTrack(localDataTrack);
+    localDataTrack.send(message);
+    let dataTrackSender = document.getElementById("data-track");
+    let senderMessage = document.createElement("div");
+    senderMessage.innerText = message;
+    dataTrackSender.appendChild(senderMessage);
+}
