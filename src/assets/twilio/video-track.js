@@ -11,20 +11,13 @@ async function joinRoom(responseData) {
 };
 
 async function startVideoChat(roomName, token) {
+    const localTracks = await Twilio.Video.createLocalTracks();
+    let dataTrack = new Twilio.Video.LocalDataTrack();
+
+    let allTracks = localTracks.concat(dataTrack);
     room = await Video.connect(token, {
-        room: roomName,
-        video: { width: 720 },
-        audio: true,
-        bandwidthProfile: {
-            video: {
-                mode: 'collaboration',
-                dominantSpeakerPriority: 'high'
-            }
-        },
-        dominantSpeaker: true,
-        preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
-        networkQuality: { local: 1, remote: 1 },
-        // tracks: [new Video.LocalVideoTrack(), new Video.LocalAudioTrack(), new Video.LocalDataTrack()]
+        name: roomName,
+        tracks: allTracks
     });
     participantConnected(room.localParticipant);
     room.participants.forEach(participantConnected);
@@ -52,14 +45,14 @@ function participantConnected(participant) {
     });
 
     participant.on('trackPublished', trackPublished);
-    // participant.on('trackAdded', track => {
-    //     console.log(`Participant "${participant.identity}" added ${track.kind} Track ${track.sid}`);
-    //     if (track.kind === 'data') {
-    //         track.on('message', data => {
-    //             console.log(data);
-    //         });
-    //     }
-    // });
+    participant.on('trackAdded', track => {
+        console.log(`Participant "${participant.identity}" added ${track.kind} Track ${track.sid}`);
+        if (track.kind === 'data') {
+            track.on('message', data => {
+                console.log(data);
+            });
+        }
+    });
 }
 
 function participantDisconnected(participant) {
@@ -101,7 +94,7 @@ function tidyUp(room) {
 
 function getLocalDataTrack(message) {
     // Creates a Local Data Track
-    let localDataTrack = new Twilio.Video.LocalDataTrack();
+    let localDataTrack = Video.LocalDataTrack();
     // Publishing the local Data Track to the Room
     room.localParticipant.publishTrack(localDataTrack);
     localDataTrack.send(message);
