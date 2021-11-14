@@ -1,25 +1,3 @@
-.frame {
-    background: #e0e0de;
-    overflow: hidden;
-    padding: 0;
-}
-
-ul {
-    width: 100%;
-    list-style-type: none;
-    padding: 18px;
-    position: absolute;
-    bottom: 47px;
-    display: flex;
-    flex-direction: column;
-    top: 0;
-    /* overflow-y: scroll; */
-}
-
-input:focus {
-    outline: none;
-}
-
 ::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */
     color: #d4d4d4;

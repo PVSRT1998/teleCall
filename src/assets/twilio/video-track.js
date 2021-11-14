@@ -33,8 +33,16 @@ async function startVideoChat(roomName, token) {
     return room;
 }
 
+function snackBar(status) {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    x.innerText = participant.identity + ` is ${status}.`;
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+}
+
 function participantConnected(participant) {
     console.log('Participant connected', participant);
+    snackBar("Joined");
     let participants = document.getElementById("participants");
 
     const e1 = document.createElement('div');
@@ -50,6 +58,7 @@ function participantConnected(participant) {
 }
 
 function participantDisconnected(participant) {
+    snackBar("Left");
     participant.removeAllListeners();
     const el = document.getElementById(participant.sid);
     el.remove();
@@ -58,9 +67,8 @@ function participantDisconnected(participant) {
 function trackPublished(trackPublication, participant) {
     const trackSubscribed = (track) => {
         if (track.kind === 'data') {
-            console.log(track);
-
             track.on('message', data => {
+                console.log(document.getElementById('chat-messages'));
                 let dataRecieved = JSON.parse(data);
                 dataRecieved.status = "recieve-msg";
                 receiveMsg.push(dataRecieved);
@@ -78,7 +86,7 @@ function trackPublished(trackPublication, participant) {
 }
 
 function tidyUp(room) {
-    return function(event) {
+    return function (event) {
         if (event.persisted) {
             return;
         }
