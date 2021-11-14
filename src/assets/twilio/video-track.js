@@ -33,7 +33,7 @@ async function startVideoChat(roomName, token) {
     return room;
 }
 
-function snackBar(status) {
+function snackBar(participant, status) {
     var x = document.getElementById("snackbar");
     x.className = "show";
     x.innerText = participant.identity + ` is ${status}.`;
@@ -42,7 +42,7 @@ function snackBar(status) {
 
 function participantConnected(participant) {
     console.log('Participant connected', participant);
-    snackBar("Joined");
+    snackBar(participant, "Joined");
     let participants = document.getElementById("participants");
 
     const e1 = document.createElement('div');
@@ -58,7 +58,7 @@ function participantConnected(participant) {
 }
 
 function participantDisconnected(participant) {
-    snackBar("Left");
+    snackBar(participant, "Left");
     participant.removeAllListeners();
     const el = document.getElementById(participant.sid);
     el.remove();
