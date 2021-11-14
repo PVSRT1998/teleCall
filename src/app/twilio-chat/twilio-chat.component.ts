@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChange } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChange } from '@angular/core';
 declare const setSenderMsg: any;
 declare const receiveMsg: any;
 
@@ -8,11 +8,11 @@ declare const receiveMsg: any;
   styleUrls: ['./twilio-chat.component.css']
 })
 export class TwilioChatComponent implements OnInit {
-
+@Input() recieve:any;
   constructor() { }
 
   messageInput: any;
-  recieve = receiveMsg;
+  // recieve = receiveMsg;
   
   ngOnInit(): void {
   }

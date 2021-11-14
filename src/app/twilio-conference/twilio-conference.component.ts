@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 declare const joinRoom: any;
+declare const participantConnectedJs: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -9,10 +10,12 @@ declare const joinRoom: any;
   styleUrls: ['./twilio-conference.component.css']
 })
 export class TwilioConferenceComponent implements OnInit {
-
+  remoteVideo!: ElementRef;
+  localVideo!: ElementRef;
   constructor(public router: Router, public element: ElementRef, public twilioService: TwilioVideoService) {
     this.routerData = this.router.getCurrentNavigation()?.extras.state;
   }
+
 
   showParticipants = false;
   showChat = false;
@@ -20,19 +23,68 @@ export class TwilioConferenceComponent implements OnInit {
   room: any;
   allParticipants: any = [];
   messageInput: any;
+  requiredMsg: any = [];
 
   async ngOnInit(): Promise<void> {
     this.room = await joinRoom(this.routerData);
     this.participantsFilter();
+    this.participantConnected(this.room.localParticipant);
+    this.room.participants.forEach(this.participantConnected);
+    this.room.on("participantConnected", this.participantConnected);
+
+    this.room.on("participantDisconnected", this.participantDisconnected);
+    this.room.once("disconnected", (error: any) => this.room.participants.forEach(this.participantDisconnected));
   }
 
+  participantConnected(participant: any) {
+    let participants: any = document.getElementById("participants");
+
+    const e1 = document.createElement('div');
+    e1.setAttribute("id", participant.sid)
+    participants.appendChild(e1);
+    console.log(participant);
+    participant.tracks.forEach((publication: any) => {
+      const trackSubscribed = (track: any) => {
+        if (track.kind === 'data') {
+          track.on('message', (data: any) => {
+            let dataRecieved = JSON.parse(data);
+            dataRecieved.status = "recieve-msg";
+            console.log(data);
+            // this.requiredMsg.push(dataRecieved);
+            this.name(data);
+          });
+        }
+        if (track.kind === 'audio' || track.kind === 'video') {
+          console.log(track);
+          // this.element.nativeElement.querySelector(`#${participant.sid}`).appendChild(track.attach());
+        }
+      };
+      if (publication.track) {
+        trackSubscribed(publication.track)
+      };
+      publication.on("subscribed", trackSubscribed);
+    });
+  };
+
+ name(res: any) {
+   console.log(res)
+ }
+
+  trackSubscribed(track: any) {
+    console.log(track);
+  }
+
+  trackUnSubscribed(track: any) {
+    console.log(track);
+  }
+
+  participantDisconnected(participant: any) {
+    console.log(participant);
+  }
   participantsFilter() {
     if (this.room) {
-      console.log(this.room);
       this.allParticipants.push(this.room.localParticipant.identity);
       this.room.participants.forEach((element: any) => {
-        console.log(element);
-        // console.log(element.value);
         this.allParticipants.push(element.identity);
       });
     }

@@ -7,6 +7,8 @@
 
                 </div>
             </div>
+            <!-- <div id="remote" #remoteVideo class="w-100 text-center" style></div>
+            <div id="local" class="position-fixed text-right w-100" #localVideo></div> -->
         </div>
         <div class="card2">
             <div>
@@ -26,7 +28,7 @@
     </div>
     <div class="chatContainer" *ngIf="showChat">
         <div class="card h-100 ">
-            <app-twilio-chat></app-twilio-chat>
+            <app-twilio-chat [recieve] = "requiredMsg"></app-twilio-chat>
         </div>
     </div>
     <div class="participantContainer" *ngIf="showParticipants">

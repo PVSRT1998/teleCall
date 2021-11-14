@@ -3,10 +3,10 @@
         <header>Chat</header>
     </div>
     <div class="chat-body">
-        <div *ngFor="let msg of recieve" id="chat-messages">
+        <!-- <div *ngFor="let msg of recieve" id="chat-messages">
             <div class={{msg.status}}>{{msg.message}}</div>
-            <!-- {{recieve}} -->
-        </div>
+        </div> -->
+        <div>{{recieve | json}}</div>
     </div>
     <div class="sendContainer">
         <div style="display: inline-block;width: 75%">

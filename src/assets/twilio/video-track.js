@@ -20,15 +20,15 @@ async function startVideoChat(roomName, token) {
         name: roomName,
         tracks: allTracks
     });
-    participantConnected(room.localParticipant);
-    room.participants.forEach(participantConnected);
+    // participantConnected(room.localParticipant);
+    // room.participants.forEach(participantConnected);
 
     // subscribe to new participant joining event so we can display their video/audio
-    room.on("participantConnected", participantConnected);
+    // room.on("participantConnected", participantConnected);
 
-    room.on("participantDisconnected", participantDisconnected);
-    window.addEventListener("beforeunload", tidyUp(room));
-    window.addEventListener("pagehide", tidyUp(room));
+    // room.on("participantDisconnected", participantDisconnected);
+    // window.addEventListener("beforeunload", tidyUp(room));
+    // window.addEventListener("pagehide", tidyUp(room));
 
     return room;
 }
@@ -40,7 +40,7 @@ function snackBar(participant, status) {
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
 
-function participantConnected(participant) {
+function participantConnectedJs(participant) {
     console.log('Participant connected', participant);
     snackBar(participant, "Joined");
     let participants = document.getElementById("participants");
@@ -98,6 +98,5 @@ function tidyUp(room) {
 };
 
 function setSenderMsg(sender) {
-    receiveMsg.push(sender);
     dataTrack.send(JSON.stringify(sender));
 }
