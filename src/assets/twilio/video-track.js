@@ -37,7 +37,7 @@ function snackBar(participant, status) {
     var x = document.getElementById("snackbar");
     x.className = "show";
     x.innerText = participant.identity + ` is ${status}.`;
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+    setTimeout(function() { x.className = x.className.replace("show", ""); }, 3000);
 }
 
 function participantConnected(participant) {
@@ -68,10 +68,12 @@ function trackPublished(trackPublication, participant) {
     const trackSubscribed = (track) => {
         if (track.kind === 'data') {
             track.on('message', data => {
-                console.log(document.getElementById('chat-messages'));
                 let dataRecieved = JSON.parse(data);
                 dataRecieved.status = "recieve-msg";
-                receiveMsg.push(dataRecieved);
+                let recieveContainer = document.createElement('p');
+                recieveContainer.classList.add(dataRecieved.status);
+                recieveContainer.innerText = dataRecieved.message;
+                document.getElementById('chat-display').appendChild(recieveContainer);
             });
         }
         if (track.kind === 'audio' || track.kind === 'video') {
@@ -86,7 +88,7 @@ function trackPublished(trackPublication, participant) {
 }
 
 function tidyUp(room) {
-    return function (event) {
+    return function(event) {
         if (event.persisted) {
             return;
         }

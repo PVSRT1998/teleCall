@@ -28,11 +28,8 @@ export class TwilioConferenceComponent implements OnInit {
 
   participantsFilter() {
     if (this.room) {
-      console.log(this.room);
       this.allParticipants.push(this.room.localParticipant.identity);
       this.room.participants.forEach((element: any) => {
-        console.log(element);
-        // console.log(element.value);
         this.allParticipants.push(element.identity);
       });
     }
@@ -40,7 +37,6 @@ export class TwilioConferenceComponent implements OnInit {
 
   async leaveCall() {
     await this.room.localParticipant.tracks.forEach((publication: { track: any; }) => {
-      console.log('parr', publication);
       const track = publication.track;
       // stop releases the media element from the browser control
       // which is useful to turn off the camera light, etc.

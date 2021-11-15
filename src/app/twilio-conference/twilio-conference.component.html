@@ -1,6 +1,5 @@
 <div class="main-container">
     <div class="video-container">
-        <!-- width: calc(100% - 320px) -->
         <div class="card1">
             <div id="room" #video>
                 <div id="participants">
@@ -24,7 +23,7 @@
             </div>
         </div>
     </div>
-    <div class="chatContainer" *ngIf="showChat">
+    <div class="chatContainer" [ngClass]="showChat? 'chatNotRequired':'chatRequired'">
         <div class="card h-100 ">
             <app-twilio-chat></app-twilio-chat>
         </div>
