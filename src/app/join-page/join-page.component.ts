@@ -25,9 +25,14 @@ export class JoinPageComponent implements OnInit {
   audioActive: boolean | undefined;
   allDevicesAllowed: boolean = false;
   ngOnInit() {
-    this.connectDevices();
+    // this.connectDevices();
+    this.internetActive = true;
+    this.cameraActive = true;
+    this.audioActive = true;
+    this.allDevicesAllowed = true;
   }
 
+  
   async connectDevices() {
     this.internetActive = navigator.onLine;
     let stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });

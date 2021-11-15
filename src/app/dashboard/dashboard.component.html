@@ -2,7 +2,7 @@
     <div class="card w-25 text-center shadow p-3 mb-5 bg-body rounded d-flex flex-column justify-content-center">
         <div class="card-body">
             <h5 class="card-title">Room Name</h5>
-            <input type="text" class="form-control" [(ngModel)]="roomName" placeholder="Enter Room Name" />
+            <input type="text" class="form-control" [(ngModel)]="roomName" placeholder="Enter Room Name" (keyup.Enter)="submitRoomName(roomName)" />
             <button class="btn btn-primary mt-3" [disabled]="!roomName" (click)="submitRoomName(roomName)">Submit</button>
         </div>
     </div>
