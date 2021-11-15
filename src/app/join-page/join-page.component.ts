@@ -10,11 +10,12 @@ import { TwilioVideoService } from '../core/services/twilio-video.service';
 export class JoinPageComponent implements OnInit {
 
   constructor(public router: Router, public twilioVideoService: TwilioVideoService) {
-    router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.roomName = event.url.split('/').pop();
-      };
-    });
+    // router.events.subscribe(event => {
+    //   if (event instanceof NavigationEnd) {
+    //     this.roomName = event.url.split('/').pop();
+    //   };
+    // });
+    this.roomName = this.router.getCurrentNavigation()?.extras.state;
   }
 
   roomName: any;

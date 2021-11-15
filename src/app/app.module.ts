@@ -11,6 +11,7 @@ import { TwilioConferenceComponent } from './twilio-conference/twilio-conference
 import { HttpClientModule } from '@angular/common/http';
 import { TwilioChatComponent } from './twilio-chat/twilio-chat.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     JoinPageComponent,
     TwilioConferenceComponent,
     TwilioChatComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
