@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { CalendarEventService } from '../core/services/calendar-event.service';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 declare const joinRoom: any;
 
@@ -10,7 +11,7 @@ declare const joinRoom: any;
 })
 export class TwilioConferenceComponent implements OnInit {
 
-  constructor(public router: Router, public element: ElementRef, public twilioService: TwilioVideoService) {
+  constructor(public router: Router, public element: ElementRef, public twilioService: TwilioVideoService, public calendarEventService: CalendarEventService) {
     this.routerData = this.router.getCurrentNavigation()?.extras.state;
   }
 
@@ -23,16 +24,22 @@ export class TwilioConferenceComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.room = await joinRoom(this.routerData);
-    this.participantsFilter();
+    this.calendarEvent(1);
   }
 
-  participantsFilter() {
-    if (this.room) {
-      this.allParticipants.push(this.room.localParticipant.identity);
-      this.room.participants.forEach((element: any) => {
-        this.allParticipants.push(element.identity);
-      });
+  calendarEvent(EventNumber: Number) {
+
+    if (this.room && this.room.participants && (this.room.participants.size == 0)) {
+      let eventData = {
+        EventId: this.routerData.room,
+        ParticipantId: this.room.localParticipant.identity,
+        ActivityType: EventNumber
+      };
+      this.calendarEventService.calendarEvent(eventData).subscribe((data) => {
+        console.log(data);
+      })
     }
+
   }
 
   async leaveCall() {
@@ -47,6 +54,7 @@ export class TwilioConferenceComponent implements OnInit {
       }
     });
     await this.room.disconnect();
+    await this.calendarEvent(2);
     this.twilioService.isAuthenticate = false;
     this.router.navigateByUrl('/');
   }

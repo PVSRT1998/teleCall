@@ -28,15 +28,16 @@
             <app-twilio-chat></app-twilio-chat>
         </div>
     </div>
-    <div class="participantContainer" *ngIf="showParticipants">
+    <div class="participantContainer" [ngClass]="showParticipants? 'chatNotRequired':'chatRequired'">
         <div class="card h-100  ">
             <div class="card-header">
                 Participants
             </div>
-            <div class="card-body" *ngIf="allParticipants.length >= 1">
-                <div *ngFor="let participant of allParticipants">
+            <div class="card-body">
+                <!-- <div *ngFor="let participant of allParticipants">
                     <span class="fw-bold text-capitalize">{{participant}}</span>
-                </div>
+                </div> -->
+                <div id="participantName"></div>
             </div>
         </div>
     </div>

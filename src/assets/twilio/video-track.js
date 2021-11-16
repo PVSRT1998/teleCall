@@ -1,7 +1,6 @@
 let room;
 let Video = Twilio.Video;
 let dataTrack = new Twilio.Video.LocalDataTrack();
-let receiveMsg = [];
 
 async function joinRoom(responseData) {
 
@@ -34,6 +33,15 @@ async function startVideoChat(roomName, token) {
 }
 
 function snackBar(participant, status) {
+    if (status === 'Joined') {
+        let participantNameContainer = document.getElementById("participantName");
+        let createParticipantName = document.createElement("p");
+        createParticipantName.setAttribute("id", participant.sid + '-' + participant.identity);
+        createParticipantName.innerText = participant.identity;
+        participantNameContainer.appendChild(createParticipantName);
+    } else {
+        document.getElementById(participant.sid + '-' + participant.identity).remove();
+    }
     var x = document.getElementById("snackbar");
     x.className = "show";
     x.innerText = participant.identity + ` is ${status}.`;
@@ -98,8 +106,3 @@ function tidyUp(room) {
         }
     };
 };
-
-function setSenderMsg(sender) {
-    receiveMsg.push(sender);
-    dataTrack.send(JSON.stringify(sender));
-}
