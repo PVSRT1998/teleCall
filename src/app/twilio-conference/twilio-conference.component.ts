@@ -4,7 +4,6 @@ import { CalendarEventService } from '../core/services/calendar-event.service';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 declare const joinRoom: any;
 declare const snackBar: any;
-// declare const trackPublished: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -27,7 +26,6 @@ export class TwilioConferenceComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.room = await joinRoom(this.routerData);
     await this.connections();
-    // this.calendarEvent(1);
   }
 
   connections() {
@@ -122,7 +120,6 @@ export class TwilioConferenceComponent implements OnInit {
           recieveContainer.classList.add(dataRecieved.status);
           recieveContainer.innerText = dataRecieved.message;
           this.element.nativeElement.querySelector(`#chat-display`).appendChild(recieveContainer);
-          // document.getElementById('chat-display').appendChild(recieveContainer);
         });
       }
       if (track.kind === 'audio' || track.kind === 'video') {

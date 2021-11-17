@@ -16,6 +16,9 @@ export class JoinPageComponent implements OnInit {
     //   };
     // });
     this.roomName = this.router.getCurrentNavigation()?.extras.state;
+    if(this.roomName == undefined) {
+      this.router.navigateByUrl('');
+    }
   }
 
   roomName: any;
@@ -25,14 +28,10 @@ export class JoinPageComponent implements OnInit {
   audioActive: boolean | undefined;
   allDevicesAllowed: boolean = false;
   ngOnInit() {
-    // this.connectDevices();
-    this.internetActive = true;
-    this.cameraActive = true;
-    this.audioActive = true;
-    this.allDevicesAllowed = true;
+    this.connectDevices();
   }
 
-  
+
   async connectDevices() {
     this.internetActive = navigator.onLine;
     let stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
@@ -53,6 +52,7 @@ export class JoinPageComponent implements OnInit {
   joinMeet() {
     if (this.allDevicesAllowed) {
       this.twilioVideoService.getAccessToken({ emailId: this.joinForm.emailOrMobile, id: this.roomName }).subscribe((data) => {
+        Object.assign(data, { room: this.roomName });
         this.router.navigate(['twilio-conference'], {
           state: data
         });
