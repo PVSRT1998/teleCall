@@ -1,6 +1,7 @@
 let room;
 let Video = Twilio.Video;
 let dataTrack = new Twilio.Video.LocalDataTrack();
+let calendarEventUrl = 'https://api.dev.cosmosclinical.com/api/CalendarEventParticipants/Activity';
 
 async function joinRoom(responseData) {
 
@@ -52,6 +53,11 @@ function participantConnected(participant) {
     console.log('Participant connected', participant);
     snackBar(participant, "Joined");
 
+    if (room && room.participants && (room.participants.size == 0)) {
+        this.callendarEvent(participant, 1);
+    } else {
+        this.callendarEvent(participant, 3);
+    }
     let participants = document.getElementById("participants");
 
     const e1 = document.createElement('div');
@@ -68,6 +74,11 @@ function participantConnected(participant) {
 
 function participantDisconnected(participant) {
     snackBar(participant, "Left");
+    if (room && room.participants && (room.participants.size == 0)) {
+        this.callendarEvent(participant, 2);
+    } else {
+        this.callendarEvent(participant, 3);
+    }
     participant.removeAllListeners();
     const el = document.getElementById(participant.sid);
     el.remove();
@@ -111,3 +122,20 @@ function tidyUp(room) {
         }
     };
 };
+
+async function callendarEvent(participant, EventNumber) {
+    let requiredData = {
+        EventId: room.name,
+        ParticipantId: participant.identity,
+        ActivityType: EventNumber
+    }
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            console.log(xmlHttp.responseText);
+        }
+    }
+    xmlHttp.open("post", calendarEventUrl);
+    xmlHttp.setRequestHeader("Content-type", "application/json");
+    xmlHttp.send(JSON.stringify(requiredData));
+}
