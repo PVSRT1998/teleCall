@@ -21,7 +21,7 @@ async function startVideoChat(roomName, token) {
         tracks: allTracks
     });
 
-    participantConnected(room.localParticipant);
+    participantConnected(room.localParticipant, 'Local');
     room.participants.forEach(participantConnected);
 
     // subscribe to new participant joining event so we can display their video/audio
@@ -46,23 +46,33 @@ function snackBar(participant, status) {
     var x = document.getElementById("snackbar");
     x.className = "show";
     x.innerText = participant.identity + ` is ${status}.`;
-    setTimeout(function() { x.className = x.className.replace("show", ""); }, 3000);
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
 
-function participantConnected(participant) {
+function participantConnected(participant, participantType) {
     console.log('Participant connected', participant);
     snackBar(participant, "Joined");
 
     if (room && room.participants && (room.participants.size == 0)) {
-        this.callendarEvent(participant, 1);
+        callendarEvent(participant, 1);
     } else {
-        this.callendarEvent(participant, 3);
+        callendarEvent(participant, 3);
     }
-    let participants = document.getElementById("participants");
 
-    const e1 = document.createElement('div');
-    e1.setAttribute("id", participant.sid)
-    participants.appendChild(e1);
+    if (participantType === 'Local') {
+        let localVideo = document.getElementById("localVideo");
+
+        const e1 = document.createElement('div');
+        e1.setAttribute("id", participant.sid)
+        localVideo.appendChild(e1);
+    } else {
+        let participants = document.getElementById("participants");
+
+        const e1 = document.createElement('div');
+        e1.setAttribute("id", participant.sid)
+        participants.appendChild(e1);
+    }
+
 
     participant.tracks.forEach((publication) => {
         trackPublished(publication, participant);
@@ -75,9 +85,9 @@ function participantConnected(participant) {
 function participantDisconnected(participant) {
     snackBar(participant, "Left");
     if (room && room.participants && (room.participants.size == 0)) {
-        this.callendarEvent(participant, 2);
+        callendarEvent(participant, 2);
     } else {
-        this.callendarEvent(participant, 3);
+        callendarEvent(participant, 3);
     }
     participant.removeAllListeners();
     const el = document.getElementById(participant.sid);
@@ -112,7 +122,7 @@ function setSenderMsg(sender) {
 }
 
 function tidyUp(room) {
-    return function(event) {
+    return function (event) {
         if (event.persisted) {
             return;
         }
@@ -130,7 +140,7 @@ async function callendarEvent(participant, EventNumber) {
         ActivityType: EventNumber
     }
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
+    xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             console.log(xmlHttp.responseText);
         }
