@@ -34,14 +34,12 @@
     cursor: pointer;
 }
 
-i {
-    font-size: 32px
-}
 
-#room {
+
+/*#room {
     flex-grow: 1;
     padding: 2em 0;
-}
+}*/
 
 #participants {
     display: grid;
@@ -63,8 +61,8 @@ i {
     display: block;
     margin: 0 auto;
     border-radius: 6px;
-    /* -webkit-transform: scaleX(-1);
-    transform: scaleX(-1); */
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
 }
 
 .chatContainer {

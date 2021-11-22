@@ -29,7 +29,11 @@
                         "styles": [
                             "src/styles.css",
                             "node_modules/bootstrap/dist/css/bootstrap.min.css",
-                            "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+                            "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+                            "src/assets/css/bootstrap.min.css",
+                            "src/assets/icons/fontawesome/css/fontawesome.min.css",
+                            "src/assets/icons/fontawesome/css/all.min.css",
+                            "src/assets/css/custom.css"
                         ],
                         "scripts": [
                             "src/assets/twilio/video-track.js"
