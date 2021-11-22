@@ -46,7 +46,7 @@ function snackBar(participant, status) {
     var x = document.getElementById("snackbar");
     x.className = "show";
     x.innerText = participant.identity + ` is ${status}.`;
-    setTimeout(function() { x.className = x.className.replace("show", ""); }, 3000);
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
 
 function participantConnected(participant) {
@@ -69,6 +69,9 @@ function participantConnected(participant) {
     });
 
     participant.on('trackPublished', trackPublished);
+    participant.on('trackUnpublished', ({ track }) => {
+        console.log('track unpublished:', track)
+    });
 
 }
 
@@ -85,6 +88,7 @@ function participantDisconnected(participant) {
 }
 
 function trackPublished(trackPublication, participant) {
+    console.log('dsfsfsfss', trackPublication, participant);
     const trackSubscribed = (track) => {
         if (track.kind === 'data') {
             track.on('message', (data) => {
@@ -96,9 +100,17 @@ function trackPublished(trackPublication, participant) {
                 document.getElementById('chat-display').appendChild(recieveContainer);
             });
         }
-        if (track.kind === 'audio' || track.kind === 'video') {
+        if (track.kind === 'audio' || (track.kind === 'video' && !(track.mediaStreamTrack.label).includes('screen'))) {
             const e1 = document.getElementById(participant.sid);
             e1.appendChild(track.attach());
+        }
+        if (track.kind === 'video' && (track.mediaStreamTrack.label).includes('screen')) {
+            let participants = document.getElementById("participants");
+
+            const e1 = document.createElement('div');
+            e1.setAttribute("id", track.id)
+            e1.appendChild(track.attach());
+            participants.appendChild(e1);
         }
     };
     if (trackPublication.track) {
@@ -112,7 +124,7 @@ function setSenderMsg(sender) {
 }
 
 function tidyUp(room) {
-    return function(event) {
+    return function (event) {
         if (event.persisted) {
             return;
         }
@@ -130,7 +142,7 @@ async function callendarEvent(participant, EventNumber) {
         ActivityType: EventNumber
     }
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
+    xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             console.log(xmlHttp.responseText);
         }
@@ -139,3 +151,15 @@ async function callendarEvent(participant, EventNumber) {
     xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requiredData));
 }
+
+async function shareScreenHandler() {
+    console.log("ddddd");
+    var screenTrack;
+    let stream = await navigator.mediaDevices.getDisplayMedia();
+    screenTrack = await new Twilio.Video.LocalVideoTrack(stream.getTracks()[0]);
+    room.localParticipant.publishTrack(screenTrack);
+    screenTrack.once('stopped', (track) => {
+        document.getElementById(track.id).remove();
+        room.localParticipant.unpublishTrack(screenTrack);
+    });
+};

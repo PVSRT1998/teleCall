@@ -4,6 +4,7 @@ import { CalendarEventService } from '../core/services/calendar-event.service';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 declare const joinRoom: any;
 declare const callendarEvent: any;
+declare const shareScreenHandler: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -69,4 +70,8 @@ export class TwilioConferenceComponent implements OnInit {
       videoContainer.style.transition = "all 0.5s ease";
     };
   };
+
+  screenShare() {
+    shareScreenHandler();
+  }
 }

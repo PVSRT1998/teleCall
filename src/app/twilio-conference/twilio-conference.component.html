@@ -5,6 +5,7 @@
                 <div id="participants">
 
                 </div>
+                <div id="share_screen"></div>
             </div>
         </div>
         <div class="card2">
@@ -16,6 +17,10 @@
                 <span class="media-device" (click)="chatWindow()">
                     <i class="bi bi-chat-left-text-fill activeReq" *ngIf="showChat"></i>
                     <i class="bi bi-chat-left-text-fill" *ngIf="!showChat"></i>
+                </span>
+                <span class="media-device" (click)="screenShare()">
+                    <i class="bi bi-share-fill activeReq"></i>
+                    <!-- <i class="bi bi-share-fill" *ngIf="!showChat"></i> -->
                 </span>
                 <span class="media-device bg-danger" (click)="leaveCall()">
                     <i class="bi bi-telephone-fill" *ngIf="true"></i>
