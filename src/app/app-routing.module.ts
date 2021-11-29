@@ -8,7 +8,7 @@ import { TwilioConferenceComponent } from './twilio-conference/twilio-conference
 
 const routes: Routes = [
   { path: '', component:  DashboardComponent},
-  { path: 'join-form', component:  JoinPageComponent},
+  { path: 'telecaller/:roomName', component:  JoinPageComponent},
   { path: 'twilio-conference', component: TwilioConferenceComponent, canActivate: [AuthGuard] },
   { path: 'page-not-found', component:  PageNotFoundComponent},
   { path: '**', redirectTo: 'page-not-found'}

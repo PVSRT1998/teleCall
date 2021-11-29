@@ -40,9 +40,19 @@
 }
 
 .sender-msg {
-    text-align: right;
-    margin-right: 20px;
-    padding: 2px;
+    padding: 8px 12px;
+    padding: 12px;
+    background-color: #e1e9f9;
+    opacity: 1;
+    clear: both;
+    color: #000;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    border-radius: 15px;
+    border-bottom-right-radius: 3px;
 }
 
 .recieve-msg {

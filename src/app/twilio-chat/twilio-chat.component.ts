@@ -24,10 +24,13 @@ export class TwilioChatComponent implements OnInit {
         message: message,
         timeStamp: Date.now()
       };
-      let sendContainer = document.createElement('p');
+      let sendParent = document.createElement('div');
+      sendParent.classList.add('sender-div');
+      let sendContainer = document.createElement('label');
       sendContainer.classList.add(Sendermsg.status);
       sendContainer.innerText = Sendermsg.message;
-      this.element.nativeElement.querySelector('#chat-display').appendChild(sendContainer);
+      sendParent.appendChild(sendContainer)
+      this.element.nativeElement.querySelector('#chat-display').appendChild(sendParent);
       await setSenderMsg(Sendermsg);
     }
   }

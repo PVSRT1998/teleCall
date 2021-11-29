@@ -1,17 +1,54 @@
-<div>
+<style>
+.chat-header {
+    background-image: linear-gradient(to right, #673ab7, #813bcb, #9e38de, #bc32ef, #dc22ff);
+    border-radius: 15px 15px 0 0;
+    padding:10px;
+    display: block;
+}
+.chat-header .chat-header-title {
+    display: inline-block;
+    color: #fff;
+    font-size: 14px;
+    margin: 0px;
+}
+.chat-body {
+    padding: 10px;
+    height: 215px;
+    background: #fbfbfb;
+    overflow: auto;
+}
+.chat-input {
+    width: 100%;
+    position: relative;
+    padding-right: 70px;
+    border-top: 1px solid #e0e0e0;
+}
+.chat-input input {
+    width: 100%;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 0 0 15px 15px;
+    resize: none;
+    border-width: 1px 0 0 0;
+    border-style: solid;
+    border-color: #f8f8f8;
+    color: #7a7a7a;
+    font-weight: normal;
+    font-size: 13px;
+    transition: border-color 0.5s ease;
+}
+.chat-input input:focus{border: inherit; box-shadow: inherit;}  
+</style>
     <div class="chat-header">
-        <header>Chat</header>
+        <label class="chat-header-title">Chat</label>
     </div>
     <div class="chat-body">
         <div id="chat-display"></div>
-        <!-- <div *ngFor="let msg of recieve" id="chat-messages">
-            <div class={{msg.status}}>{{msg.message}}</div>
-        </div> -->
+       
     </div>
-    <div class="sendContainer">
-        <div style="display: inline-block;width: 75%">
+    <div class="chat-input">
+        <div >
             <input class="mytext" class="form-control" placeholder="Type a message" (keyup.enter)="sendMessage(messageInput)" [(ngModel)]="messageInput" />
         </div>
-        <button type="submit" class="btn btn-secondary" (click)="sendMessage(messageInput)">Send</button>
+        <button style="position: absolute; right: 6px; top: 5px;" type="submit" class="btn btn-secondary" (click)="sendMessage(messageInput)">Send</button>
     </div>
-</div>

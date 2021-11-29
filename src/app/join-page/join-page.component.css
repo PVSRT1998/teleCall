@@ -1,26 +1,32 @@
+.join-form-wrapper
+{display: flex;
+    justify-content: center;}
+
 .card {
-    min-height: 384px;
+   
     min-width: 320px;
-    margin: 96px 128px;
+    
     border-radius: 12px !important;
 }
 
 .media-device {
     height: 50px;
     width: 50px;
-    background-color: #bbb;
+    border: 1px solid #bbb;
     border-radius: 50%;
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     vertical-align: middle;
 }
 
 i {
-    font-size: 32px
+    font-size: 23px;
 }
 
 span .active {
-    color: green;
+    color: #646464;
 }
 
 .room-name-container {

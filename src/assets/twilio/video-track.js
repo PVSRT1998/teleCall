@@ -21,7 +21,7 @@ async function startVideoChat(roomName, token) {
         tracks: allTracks
     });
 
-    participantConnected(room.localParticipant);
+    participantConnected(room.localParticipant, 'Local');
     room.participants.forEach(participantConnected);
 
     // subscribe to new participant joining event so we can display their video/audio
@@ -36,10 +36,13 @@ async function startVideoChat(roomName, token) {
 function snackBar(participant, status) {
     if (status === 'Joined') {
         let participantNameContainer = document.getElementById("participantName");
-        let createParticipantName = document.createElement("p");
+        let createParticipantDiv = document.createElement("div");
+        createParticipantDiv.classList.add("participant-div");
+        let createParticipantName = document.createElement("label");
         createParticipantName.setAttribute("id", participant.sid + '-' + participant.identity);
         createParticipantName.innerText = participant.identity;
-        participantNameContainer.appendChild(createParticipantName);
+        createParticipantDiv.appendChild(createParticipantName);
+        participantNameContainer.appendChild(createParticipantDiv);
     } else {
         document.getElementById(participant.sid + '-' + participant.identity).remove();
     }
@@ -49,68 +52,81 @@ function snackBar(participant, status) {
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
 
-function participantConnected(participant) {
+function participantConnected(participant, participantType) {
     console.log('Participant connected', participant);
     snackBar(participant, "Joined");
 
     if (room && room.participants && (room.participants.size == 0)) {
-        this.callendarEvent(participant, 1);
+        callendarEvent(participant, 1);
     } else {
-        this.callendarEvent(participant, 3);
+        callendarEvent(participant, 3);
     }
-    let participants = document.getElementById("participants");
 
-    const e1 = document.createElement('div');
-    e1.setAttribute("id", participant.sid)
-    participants.appendChild(e1);
+    if (participantType === 'Local') {
+        let localVideo = document.getElementById("localVideo");
+        
+        const e1 = document.createElement('div');
+        e1.setAttribute("id", participant.sid)
+        localVideo.appendChild(e1);
+    } else {
+        let participants = document.getElementById("participants");
 
+        const e1 = document.createElement('div');
+        e1.setAttribute("id", participant.sid)
+        participants.appendChild(e1);
+    }
+
+    requiredParticipantsContainerFit();
     participant.tracks.forEach((publication) => {
         trackPublished(publication, participant);
     });
 
     participant.on('trackPublished', trackPublished);
-    participant.on('trackUnpublished', ({ track }) => {
-        console.log('track unpublished:', track)
-    });
 
+}
+
+function requiredParticipantsContainerFit() {
+    let localRoom = document.getElementById("localroom");
+    if(room && room.participants && (room.participants.size == 0)) {
+        localRoom.classList.remove("my-video");
+        localRoom.classList.add("user-video");
+    } else {
+        localRoom.classList.remove("user-video");
+        localRoom.classList.add("my-video");
+    }
 }
 
 function participantDisconnected(participant) {
     snackBar(participant, "Left");
     if (room && room.participants && (room.participants.size == 0)) {
-        this.callendarEvent(participant, 2);
+        callendarEvent(participant, 2);
     } else {
-        this.callendarEvent(participant, 3);
+        callendarEvent(participant, 3);
     }
     participant.removeAllListeners();
     const el = document.getElementById(participant.sid);
     el.remove();
+    requiredParticipantsContainerFit();
 }
 
 function trackPublished(trackPublication, participant) {
-    console.log('dsfsfsfss', trackPublication, participant);
     const trackSubscribed = (track) => {
         if (track.kind === 'data') {
             track.on('message', (data) => {
                 let dataRecieved = JSON.parse(data);
                 dataRecieved.status = "recieve-msg";
-                let recieveContainer = document.createElement('p');
+                let recieveParent = document.createElement('div');
+                recieveParent.classList.add('reciever-div');
+                let recieveContainer = document.createElement('label');
                 recieveContainer.classList.add(dataRecieved.status);
                 recieveContainer.innerText = dataRecieved.message;
-                document.getElementById('chat-display').appendChild(recieveContainer);
+                recieveParent.appendChild(recieveContainer);
+                document.getElementById('chat-display').appendChild(recieveParent);
             });
         }
-        if (track.kind === 'audio' || (track.kind === 'video' && !(track.mediaStreamTrack.label).includes('screen'))) {
+        if (track.kind === 'audio' || track.kind === 'video') {
             const e1 = document.getElementById(participant.sid);
             e1.appendChild(track.attach());
-        }
-        if (track.kind === 'video' && (track.mediaStreamTrack.label).includes('screen')) {
-            let participants = document.getElementById("participants");
-
-            const e1 = document.createElement('div');
-            e1.setAttribute("id", track.id)
-            e1.appendChild(track.attach());
-            participants.appendChild(e1);
         }
     };
     if (trackPublication.track) {
@@ -151,15 +167,3 @@ async function callendarEvent(participant, EventNumber) {
     xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requiredData));
 }
-
-async function shareScreenHandler() {
-    console.log("ddddd");
-    var screenTrack;
-    let stream = await navigator.mediaDevices.getDisplayMedia();
-    screenTrack = await new Twilio.Video.LocalVideoTrack(stream.getTracks()[0]);
-    room.localParticipant.publishTrack(screenTrack);
-    screenTrack.once('stopped', (track) => {
-        document.getElementById(track.id).remove();
-        room.localParticipant.unpublishTrack(screenTrack);
-    });
-};

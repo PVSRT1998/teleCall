@@ -34,14 +34,12 @@
     cursor: pointer;
 }
 
-i {
-    font-size: 32px
-}
 
-#room {
+
+/*#room {
     flex-grow: 1;
     padding: 2em 0;
-}
+}*/
 
 #participants {
     display: grid;
@@ -63,27 +61,72 @@ i {
     display: block;
     margin: 0 auto;
     border-radius: 6px;
-    /* -webkit-transform: scaleX(-1);
-    transform: scaleX(-1); */
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
 }
 
 .chatContainer {
-    max-width: 320px;
-    width: 320px;
-    height: 60%;
-    position: absolute;
+    position: fixed;
+    bottom:0px;
     right: 0px;
-    bottom: 0px;
-    z-index: 1;
+    z-index: 9999;
+    width: 350px;
+    height: 307px;
+    background: #fff;
+    box-sizing: border-box;
+    border-radius: 15px;
+    box-shadow: 0px 15px 20px rgb(0 0 0 / 10%);
 }
-
+.chat-header {
+    background-image: linear-gradient(to right, #673ab7, #813bcb, #9e38de, #bc32ef, #dc22ff);
+    border-radius: 15px 15px 0 0;
+    padding:10px;
+    display: block;
+}
+.chat-header .chat-header-title {
+    display: inline-block;
+    color: #fff;
+    font-size: 14px;
+    margin: 0px;
+}
+.chat-body {
+    padding: 10px;
+    height: 215px;
+    background: #fbfbfb;
+    overflow: auto;
+}
+.chat-input {
+    width: 100%;
+    position: relative;
+    display: flex;
+    border-top: 1px solid #e0e0e0;
+}
+.chat-input input {
+    width: 100%;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 0 0 15px 15px;
+    resize: none;
+    border-width: 1px 0 0 0;
+    border-style: solid;
+    border-color: #f8f8f8;
+    color: #7a7a7a;
+    font-weight: normal;
+    font-size: 13px;
+    transition: border-color 0.5s ease;
+}
+.chat-input input:focus{border: inherit; box-shadow: inherit;}  
 .participantContainer {
-    max-width: 320px;
-    width: 320px;
-    height: 100%;
-    position: absolute;
+    position: fixed;
+    bottom:0px;
     right: 0px;
-    top: 0px;
+    z-index: 9999;
+    width: 280px;
+    height: 400px;
+    background: #fff;
+    box-sizing: border-box;
+    border-radius: 15px;
+    box-shadow: 0px 15px 20px rgb(0 0 0 / 10%);
 }
 
 .activeReq {
@@ -171,4 +214,23 @@ i {
 
 .chatNotRequired {
     display: block;
+}
+
+
+
+.chatDisable {
+    margin-right: 0;
+}
+.activeBtn {
+    background-color: #0086b2;
+    color: white !important;
+}
+
+.inactiveBtn {
+    background-color: white !important;
+}
+
+.chatReq {
+    margin-right: 200px;
+
 }

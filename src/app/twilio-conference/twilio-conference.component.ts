@@ -4,7 +4,6 @@ import { CalendarEventService } from '../core/services/calendar-event.service';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
 declare const joinRoom: any;
 declare const callendarEvent: any;
-declare const shareScreenHandler: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -19,6 +18,7 @@ export class TwilioConferenceComponent implements OnInit {
 
   showParticipants = false;
   showChat = false;
+  localContainer = false;
   routerData: any;
   room: any;
   allParticipants: any = [];
@@ -26,6 +26,7 @@ export class TwilioConferenceComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.room = await joinRoom(this.routerData);
+    if(this.room.participants.size == 0) this.localContainer = true;
   }
 
   async leaveCall() {
@@ -51,27 +52,23 @@ export class TwilioConferenceComponent implements OnInit {
   chatWindow() {
 
     this.showChat = (this.showChat) ? false : true;
-    this.chatOrParticipantContainer();
+    // this.chatOrParticipantContainer();
   };
 
   participantsWindow() {
     this.showParticipants = (this.showParticipants) ? false : true;
-    this.chatOrParticipantContainer();
+    // this.chatOrParticipantContainer();
   };
 
   chatOrParticipantContainer() {
-    let videoContainer = this.element.nativeElement.querySelector('.video-container');
+    let videoContainer = this.element.nativeElement.querySelector('.my-video');
 
     if (this.showParticipants || this.showChat) {
-      videoContainer.style.width = "calc(100% - 320px)";
+      // videoContainer.style.width = "calc(100% - 320px)";
       videoContainer.style.transition = "all 0.5s ease";
     } else {
       videoContainer.style.width = "100%";
-      videoContainer.style.transition = "all 0.5s ease";
+      // videoContainer.style.transition = "all 0.5s ease";
     };
   };
-
-  screenShare() {
-    shareScreenHandler();
-  }
 }
