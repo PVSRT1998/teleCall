@@ -190,7 +190,8 @@ async function captureScreen() {
     try {
         // Create and preview your local screen.
         screenTrack = await createScreenTrack(720, 1280);
-
+        // let localScreenShare = document.getElementById("local-screenshare");
+        // localScreenShare.appendChild(screenTrack.attach());
         // Publish screen track to room
         await room.localParticipant.publishTrack(screenTrack, room.localParticipant);
 
@@ -198,6 +199,7 @@ async function captureScreen() {
         screenTrack.on('stopped', () => {
             if (room) {
                 room.localParticipant.unpublishTrack(screenTrack);
+                screenTrack = null;
             }
         });
 
@@ -223,21 +225,23 @@ function createScreenTrack(height, width) {
 }
 
 function onTrackPublished(publishType, publication) {
-    let remoteScreenPreview = document.getElementById('screenshare');
-    let roomVideo = document.querySelector('.user-video video');
-    if (publishType === 'publish') {
-        roomVideo.style.display = 'none';
-        if (publication.track) {
-            remoteScreenPreview.appendChild(publication.track.attach());
-        }
+    if (screenTrack) {
+        let remoteScreenPreview = document.getElementById('screenshare');
+        let roomVideo = document.querySelector('.user-video video');
+        if (publishType === 'publish') {
+            roomVideo.style.display = 'none';
+            if (publication.track) {
+                remoteScreenPreview.appendChild(publication.track.attach());
+            }
 
-        publication.on('subscribed', track => {
-            remoteScreenPreview.appendChild(track.attach());
-        });
-    } else if (publishType === 'unpublish') {
-        roomVideo.style.display = 'block';
-        if (remoteScreenPreview.hasChildNodes()) {
-            remoteScreenPreview.removeChild(remoteScreenPreview.childNodes[0]);
+            publication.on('subscribed', track => {
+                remoteScreenPreview.appendChild(track.attach());
+            });
+        } else if (publishType === 'unpublish') {
+            roomVideo.style.display = 'block';
+            if (remoteScreenPreview.hasChildNodes()) {
+                remoteScreenPreview.removeChild(remoteScreenPreview.childNodes[0]);
+            }
         }
     }
 }
