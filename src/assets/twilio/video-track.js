@@ -2,6 +2,7 @@ let room;
 let Video = Twilio.Video;
 let dataTrack = new Twilio.Video.LocalDataTrack();
 let calendarEventUrl = 'https://api.dev.cosmosclinical.com/api/CalendarEventParticipants/Activity';
+let screenTrack;
 
 async function joinRoom(responseData) {
 
@@ -16,20 +17,36 @@ async function startVideoChat(roomName, token) {
     const localTracks = await Twilio.Video.createLocalTracks();
 
     let allTracks = localTracks.concat(dataTrack);
-    room = await Video.connect(token, {
+    await Video.connect(token, {
         name: roomName,
         tracks: allTracks
+    }).then(activeRoom => {
+        console.log(`Successfully joined a Room: ${activeRoom}`);
+        room = activeRoom;
+        participantConnected(room.localParticipant, 'Local');
+        room.participants.forEach(participantConnected);
+
+        // subscribe to new participant joining event so we can display their video/audio
+        room.on("participantConnected", participantConnected);
+
+        room.on("participantDisconnected", participantDisconnected);
+        window.addEventListener("beforeunload", tidyUp(room));
+        window.addEventListener("pagehide", tidyUp(room));
+
+        room.on('trackPublished', publication => {
+            console.log('trakpublish',publication);
+            // onTrackPublished('publish', publication, remoteScreenPreview);
+          });
+      
+          room.on('trackUnpublished', publication => {
+            console.log('trakunpublish',publication);
+            // onTrackPublished('unpublish', publication, remoteScreenPreview);
+          });
+
+    }, error => {
+        console.error(`Unable to connect to Room: ${error.message}`);
+        room = "NoRoom";
     });
-
-    participantConnected(room.localParticipant, 'Local');
-    room.participants.forEach(participantConnected);
-
-    // subscribe to new participant joining event so we can display their video/audio
-    room.on("participantConnected", participantConnected);
-
-    room.on("participantDisconnected", participantDisconnected);
-    window.addEventListener("beforeunload", tidyUp(room));
-    window.addEventListener("pagehide", tidyUp(room));
     return room;
 }
 
@@ -64,7 +81,7 @@ function participantConnected(participant, participantType) {
 
     if (participantType === 'Local') {
         let localVideo = document.getElementById("localVideo");
-        
+
         const e1 = document.createElement('div');
         e1.setAttribute("id", participant.sid)
         localVideo.appendChild(e1);
@@ -87,7 +104,7 @@ function participantConnected(participant, participantType) {
 
 function requiredParticipantsContainerFit() {
     let localRoom = document.getElementById("localroom");
-    if(room && room.participants && (room.participants.size == 0)) {
+    if (room && room.participants && (room.participants.size == 0)) {
         localRoom.classList.remove("my-video");
         localRoom.classList.add("user-video");
     } else {
@@ -111,7 +128,7 @@ function participantDisconnected(participant) {
 
 function trackPublished(trackPublication, participant) {
     const trackSubscribed = (track) => {
-        if (track.kind === 'data') {
+        if (track && track.kind && track.kind === 'data') {
             track.on('message', (data) => {
                 let dataRecieved = JSON.parse(data);
                 dataRecieved.status = "recieve-msg";
@@ -124,9 +141,9 @@ function trackPublished(trackPublication, participant) {
                 document.getElementById('chat-display').appendChild(recieveParent);
             });
         }
-        if (track.kind === 'audio' || track.kind === 'video') {
+        if (participant && track && track.kind && (track.kind === 'audio' || track.kind === 'video')) {
             const e1 = document.getElementById(participant.sid);
-            e1.appendChild(track.attach());
+            if(e1) e1.appendChild(track.attach());
         }
     };
     if (trackPublication.track) {
@@ -166,4 +183,40 @@ async function callendarEvent(participant, EventNumber) {
     xmlHttp.open("post", calendarEventUrl);
     xmlHttp.setRequestHeader("Content-type", "application/json");
     xmlHttp.send(JSON.stringify(requiredData));
+};
+
+async function captureScreen() {
+    try {
+        // Create and preview your local screen.
+        screenTrack = await createScreenTrack(720, 1280);
+  
+        // Publish screen track to room
+        await room.localParticipant.publishTrack(screenTrack, room.localParticipant);
+  
+        // When screen sharing is stopped, unpublish the screen track.
+        screenTrack.on('stopped', () => {
+          if (room) {
+            room.localParticipant.unpublishTrack(screenTrack);
+          }
+        });
+  
+      } catch (e) {
+        alert(e.message);
+      }
 }
+
+function createScreenTrack(height, width) {
+    if (typeof navigator === 'undefined'
+      || !navigator.mediaDevices
+      || !navigator.mediaDevices.getDisplayMedia) {
+      return Promise.reject(new Error('getDisplayMedia is not supported'));
+    }
+    return navigator.mediaDevices.getDisplayMedia({
+      video: {
+        height: height,
+        width: width
+      }
+    }).then(function(stream) {
+      return new Video.LocalVideoTrack(stream.getVideoTracks()[0]);
+    });
+  }

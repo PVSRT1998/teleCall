@@ -43,6 +43,11 @@
                                             <i class="bi bi-chat-left-text-fill microphone" *ngIf="!showChat"></i>
                                         </a>
                                     </li>
+                                    <li class="call-item">
+                                        <a (click)="shareScreen()">
+                                            <i class="bi bi-share-fill"></i>
+                                        </a>
+                                    </li>
                                    
                                     <li class="call-item">
                                         <a   (click)="leaveCall()" style=" background-color: #f06060; color: #fff; transform: rotate(135deg);">
