@@ -4,6 +4,7 @@ let dataTrack = new Twilio.Video.LocalDataTrack();
 let calendarEventUrl = 'https://api.dev.cosmosclinical.com/api/CalendarEventParticipants/Activity';
 let screenTrack;
 
+
 async function joinRoom(responseData) {
 
     let roomName = await responseData.room;
@@ -34,14 +35,14 @@ async function startVideoChat(roomName, token) {
         window.addEventListener("pagehide", tidyUp(room));
 
         room.on('trackPublished', publication => {
-            console.log('trakpublish',publication);
-            // onTrackPublished('publish', publication, remoteScreenPreview);
-          });
-      
-          room.on('trackUnpublished', publication => {
-            console.log('trakunpublish',publication);
-            // onTrackPublished('unpublish', publication, remoteScreenPreview);
-          });
+            console.log('trakpublish', publication);
+            onTrackPublished('publish', publication);
+        });
+
+        room.on('trackUnpublished', publication => {
+            console.log('trakunpublish', publication);
+            onTrackPublished('unpublish', publication);
+        });
 
     }, error => {
         console.error(`Unable to connect to Room: ${error.message}`);
@@ -143,7 +144,7 @@ function trackPublished(trackPublication, participant) {
         }
         if (participant && track && track.kind && (track.kind === 'audio' || track.kind === 'video')) {
             const e1 = document.getElementById(participant.sid);
-            if(e1) e1.appendChild(track.attach());
+            if (e1) e1.appendChild(track.attach());
         }
     };
     if (trackPublication.track) {
@@ -189,34 +190,54 @@ async function captureScreen() {
     try {
         // Create and preview your local screen.
         screenTrack = await createScreenTrack(720, 1280);
-  
+
         // Publish screen track to room
         await room.localParticipant.publishTrack(screenTrack, room.localParticipant);
-  
+
         // When screen sharing is stopped, unpublish the screen track.
         screenTrack.on('stopped', () => {
-          if (room) {
-            room.localParticipant.unpublishTrack(screenTrack);
-          }
+            if (room) {
+                room.localParticipant.unpublishTrack(screenTrack);
+            }
         });
-  
-      } catch (e) {
+
+    } catch (e) {
         alert(e.message);
-      }
+    }
 }
 
 function createScreenTrack(height, width) {
     if (typeof navigator === 'undefined'
-      || !navigator.mediaDevices
-      || !navigator.mediaDevices.getDisplayMedia) {
-      return Promise.reject(new Error('getDisplayMedia is not supported'));
+        || !navigator.mediaDevices
+        || !navigator.mediaDevices.getDisplayMedia) {
+        return Promise.reject(new Error('getDisplayMedia is not supported'));
     }
     return navigator.mediaDevices.getDisplayMedia({
-      video: {
-        height: height,
-        width: width
-      }
-    }).then(function(stream) {
-      return new Video.LocalVideoTrack(stream.getVideoTracks()[0]);
+        video: {
+            height: height,
+            width: width
+        }
+    }).then(function (stream) {
+        return new Video.LocalVideoTrack(stream.getVideoTracks()[0]);
     });
-  }
+}
+
+function onTrackPublished(publishType, publication) {
+    let remoteScreenPreview = document.getElementById('screenshare');
+    let roomVideo = document.querySelector('.user-video video');
+    if (publishType === 'publish') {
+        roomVideo.style.display = 'none';
+        if (publication.track) {
+            remoteScreenPreview.appendChild(publication.track.attach());
+        }
+
+        publication.on('subscribed', track => {
+            remoteScreenPreview.appendChild(track.attach());
+        });
+    } else if (publishType === 'unpublish') {
+        roomVideo.style.display = 'block';
+        if (remoteScreenPreview.hasChildNodes()) {
+            remoteScreenPreview.removeChild(remoteScreenPreview.childNodes[0]);
+        }
+    }
+}

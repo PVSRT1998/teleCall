@@ -1,91 +1,91 @@
 <!-- Main Wrapper -->
 <div class="main-wrapper" [ngClass]="room? 'chatNotRequired': 'chatRequired'">
-		
+
     <!-- Page Content -->
     <div class="content ">
         <div class="container-fluid">
-        
-           <!-- Call Wrapper -->
-    
-                        <!-- Call Contents -->
-                        
-                                <div class="user-video" id="room" #video >
-                                    
-                                        <div id="participants">
-                        
-                                        </div>
-                                    
-                                </div>
-                                <div id="localroom"  [ngClass]="(showChat || showParticipants)? 'chatEnable': 'chatDisable'">
-                                    
-                                        <div id="localVideo">
-                                            <!-- <img src="assets/img/patient1.jpg" class="img-fluid" alt="User Image"> -->
-                                        </div>
-                                   
-                                </div>
-                       
-                        <!-- Call Contents -->
-                        
-                        <!-- Call Footer -->
-                        <div class="call-footer">
-                            <div class="call-icons">
-                                <!-- <span style="display: none;" class="call-duration">00:59</span> -->
-                                <ul class="call-items">
-                                    <li class="call-item">
-                                        <a   (click)="participantsWindow()" [ngClass]="showParticipants? 'activeBtn':'inactiveBtn'">
-                                            <i class="fas bi-people-fill camera" *ngIf="showParticipants"></i>
-                                            <i class="fas bi-people-fill camera" *ngIf="!showParticipants"></i>
-                                        </a>
-                                    </li>
-                                    <li class="call-item">
-                                        <a   (click)="chatWindow()" [ngClass]="showChat? 'activeBtn':'inactiveBtn'">
-                                            <i class="fa bi-chat-left-text-fill microphone" *ngIf="showChat"></i>
-                                            <i class="bi bi-chat-left-text-fill microphone" *ngIf="!showChat"></i>
-                                        </a>
-                                    </li>
-                                    <li class="call-item">
-                                        <a (click)="shareScreen()">
-                                            <i class="bi bi-share-fill"></i>
-                                        </a>
-                                    </li>
-                                   
-                                    <li class="call-item">
-                                        <a   (click)="leaveCall()" style=" background-color: #f06060; color: #fff; transform: rotate(135deg);">
-                                            <i class="bi bi-telephone-fill microphone" *ngIf="true"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- /Call Footer -->
-                        
-            
-    <!-- /Call Wrapper -->
-            
+
+            <!-- Call Wrapper -->
+
+            <!-- Call Contents -->
+            <div class="user-video" id="room" #video>
+
+                <div id="participants"></div>
+
+            </div>
+            <div id="localroom" [ngClass]="(showChat || showParticipants)? 'chatEnable': 'chatDisable'">
+
+                <div id="localVideo">
+                    <!-- <img src="assets/img/patient1.jpg" class="img-fluid" alt="User Image"> -->
+                </div>
+
+            </div>
+
+            <div id="screenshare"></div>
+
+            <!-- Call Contents -->
+
+            <!-- Call Footer -->
+            <div class="call-footer">
+                <div class="call-icons">
+                    <!-- <span style="display: none;" class="call-duration">00:59</span> -->
+                    <ul class="call-items">
+                        <li class="call-item">
+                            <a (click)="participantsWindow()" [ngClass]="showParticipants? 'activeBtn':'inactiveBtn'">
+                                <i class="fas bi-people-fill camera" *ngIf="showParticipants"></i>
+                                <i class="fas bi-people-fill camera" *ngIf="!showParticipants"></i>
+                            </a>
+                        </li>
+                        <li class="call-item">
+                            <a (click)="chatWindow()" [ngClass]="showChat? 'activeBtn':'inactiveBtn'">
+                                <i class="fa bi-chat-left-text-fill microphone" *ngIf="showChat"></i>
+                                <i class="bi bi-chat-left-text-fill microphone" *ngIf="!showChat"></i>
+                            </a>
+                        </li>
+                        <li class="call-item">
+                            <a (click)="shareScreen()">
+                                <i class="bi bi-share-fill"></i>
+                            </a>
+                        </li>
+
+                        <li class="call-item">
+                            <a (click)="leaveCall()"
+                                style=" background-color: #f06060; color: #fff; transform: rotate(135deg);">
+                                <i class="bi bi-telephone-fill microphone" *ngIf="true"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /Call Footer -->
+
+
+            <!-- /Call Wrapper -->
+
         </div>
 
-    </div>		
+    </div>
     <!-- /Page Content -->
 
     <div class="chatContainer" [ngClass]="showChat? 'chatNotRequired':'chatRequired'">
-     
-            <app-twilio-chat></app-twilio-chat>
-      
+
+        <app-twilio-chat></app-twilio-chat>
+
     </div>
     <div class="participantContainer" [ngClass]="showParticipants? 'chatNotRequired':'chatRequired'">
         <div class="chat-header">
             <label class="chat-header-title">Participants</label>
         </div>
-            
+
         <div class="chat-body">
-              
-                <div id="participantName"></div>
-            </div>
-        
+
+            <div id="participantName"></div>
+        </div>
+
     </div>
 </div>
 <!-- /Main Wrapper -->
-	
+
 
 
 
