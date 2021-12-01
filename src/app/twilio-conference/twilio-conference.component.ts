@@ -19,6 +19,7 @@ export class TwilioConferenceComponent implements OnInit {
 
   showParticipants = false;
   showChat = false;
+  screenShareContainer = false;
   localContainer = false;
   routerData: any;
   room: any;
@@ -76,6 +77,9 @@ export class TwilioConferenceComponent implements OnInit {
 
   async shareScreen() {
     console.log("screen share");
-    await captureScreen();
+    this.screenShareContainer = (this.screenShareContainer) ? false : true;
+    if(this.screenShareContainer) {
+      await captureScreen();
+    }
   }
 }

@@ -34,14 +34,14 @@ async function startVideoChat(roomName, token) {
         window.addEventListener("beforeunload", tidyUp(room));
         window.addEventListener("pagehide", tidyUp(room));
 
-        room.on('trackPublished', publication => {
-            console.log('trakpublish', publication);
-            onTrackPublished('publish', publication);
-        });
+        // room.on('trackPublished', publication => {
+        //     console.log('trakpublish', publication);
+        //     onTrackPublished('publish', publication);
+        // });
 
         room.on('trackUnpublished', publication => {
             console.log('trakunpublish', publication);
-            onTrackPublished('unpublish', publication);
+            onTrackUnPublished('unpublish', publication);
         });
 
     }, error => {
@@ -70,13 +70,27 @@ function snackBar(participant, status) {
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
 
+function screenShareEvent(a) {
+    let screenIcon = document.getElementById("screenShareIcon");
+    if (a == "No") {
+        let remoteScreenPreview = document.getElementById('screenshare');
+        if (remoteScreenPreview.querySelector('video')) {
+            remoteScreenPreview.removeChild(remoteScreenPreview.querySelector('video'));
+        }
+        screenIcon.style.display = "none";
+    } else {
+        screenIcon.style.display = "inline-block";
+    }
+}
 function participantConnected(participant, participantType) {
     console.log('Participant connected', participant);
     snackBar(participant, "Joined");
 
     if (room && room.participants && (room.participants.size == 0)) {
+        screenShareEvent("No");
         callendarEvent(participant, 1);
     } else {
+        screenShareEvent("Yes");
         callendarEvent(participant, 3);
     }
 
@@ -117,8 +131,10 @@ function requiredParticipantsContainerFit() {
 function participantDisconnected(participant) {
     snackBar(participant, "Left");
     if (room && room.participants && (room.participants.size == 0)) {
+        screenShareEvent("No");
         callendarEvent(participant, 2);
     } else {
+        screenShareEvent("Yes");
         callendarEvent(participant, 3);
     }
     participant.removeAllListeners();
@@ -128,6 +144,8 @@ function participantDisconnected(participant) {
 }
 
 function trackPublished(trackPublication, participant) {
+    console.log(trackPublication);
+    console.log(participant);
     const trackSubscribed = (track) => {
         if (track && track.kind && track.kind === 'data') {
             track.on('message', (data) => {
@@ -141,10 +159,29 @@ function trackPublished(trackPublication, participant) {
                 recieveParent.appendChild(recieveContainer);
                 document.getElementById('chat-display').appendChild(recieveParent);
             });
-        }
-        if (participant && track && track.kind && (track.kind === 'audio' || track.kind === 'video')) {
+        } else if (participant && track && track.kind && track.kind === 'video') {
             const e1 = document.getElementById(participant.sid);
-            if (e1) e1.appendChild(track.attach());
+            if (!e1.querySelector('video')) {
+                e1.appendChild(track.attach());
+                // } else {
+                //     let remoteScreenPreview = document.getElementById('screenshare');
+                //     let roomVideo = document.querySelector('.user-video video');
+                //     if (e1.querySelector('video')) {
+                //         roomVideo.style.display = 'none';
+                //         remoteScreenPreview.appendChild(track.attach());
+                //     }
+            }
+        } else if (participant && track.kind === 'audio') {
+            const e1 = document.getElementById(participant.sid);
+            if (!e1.querySelector('audio')) {
+                e1.appendChild(track.attach());
+            }
+        } else if (!participant && track.kind === 'video') {
+            let remoteScreenPreview = document.getElementById('screenshare');
+            let roomVideo = document.querySelector('.user-video video');
+
+            roomVideo.style.display = 'none';
+            remoteScreenPreview.appendChild(track.attach());
         }
     };
     if (trackPublication.track) {
@@ -224,24 +261,23 @@ function createScreenTrack(height, width) {
     });
 }
 
-function onTrackPublished(publishType, publication) {
-    if (screenTrack) {
+function onTrackUnPublished(publishType, publication) {
+    if (publication.kind == 'video') {
         let remoteScreenPreview = document.getElementById('screenshare');
         let roomVideo = document.querySelector('.user-video video');
-        if (publishType === 'publish') {
-            roomVideo.style.display = 'none';
-            if (publication.track) {
-                remoteScreenPreview.appendChild(publication.track.attach());
-            }
-
-            publication.on('subscribed', track => {
-                remoteScreenPreview.appendChild(track.attach());
-            });
-        } else if (publishType === 'unpublish') {
+        if (remoteScreenPreview.hasChildNodes() && remoteScreenPreview.querySelector('video')) {
             roomVideo.style.display = 'block';
-            if (remoteScreenPreview.hasChildNodes()) {
-                remoteScreenPreview.removeChild(remoteScreenPreview.childNodes[0]);
-            }
+            remoteScreenPreview.removeChild(remoteScreenPreview.querySelector('video'));
         }
+    }
+}
+
+function onTrackPublished(publishType, publication) {
+    if (publication.kind == 'video') {
+        let remoteScreenPreview = document.getElementById('screenshare');
+        let roomVideo = document.querySelector('.user-video video');
+
+        roomVideo.style.display = 'none';
+        remoteScreenPreview.appendChild(publication.track.attach());
     }
 }
