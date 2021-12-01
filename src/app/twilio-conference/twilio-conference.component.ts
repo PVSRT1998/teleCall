@@ -7,6 +7,7 @@ import { EndCallDialogComponent } from '../end-call-dialog/end-call-dialog.compo
 declare const joinRoom: any;
 declare const callendarEvent: any;
 declare const captureScreen: any;
+declare const screenShareHandler: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -15,7 +16,7 @@ declare const captureScreen: any;
 })
 export class TwilioConferenceComponent implements OnInit {
 
-  constructor(public dialog: MatDialog ,public router: Router, public element: ElementRef, public twilioService: TwilioVideoService, public calendarEventService: CalendarEventService) {
+  constructor(public dialog: MatDialog, public router: Router, public element: ElementRef, public twilioService: TwilioVideoService, public calendarEventService: CalendarEventService) {
     this.routerData = this.router.getCurrentNavigation()?.extras.state;
   }
 
@@ -42,7 +43,7 @@ export class TwilioConferenceComponent implements OnInit {
       if (result && !result.event) return;
       if (result && result.event) this.endCall();
     })
-    
+
   }
 
   async endCall() {
@@ -77,20 +78,23 @@ export class TwilioConferenceComponent implements OnInit {
     this.screenShareContainer = (this.screenShareContainer) ? false : true;
     if (this.screenShareContainer) {
       await captureScreen();
+    } else {
+      // When screen sharing is stopped, unpublish the screen track.
+      await screenShareHandler();
     }
   }
 
   async muteAction() {
     this.muteContainer = (this.muteContainer) ? false : true;
-    if(this.muteContainer) {
-      this.room.localParticipant.audioTracks.forEach((publication:any) => {
+    if (this.muteContainer) {
+      this.room.localParticipant.audioTracks.forEach((publication: any) => {
         publication.track.disable();
       });
     } else {
-      this.room.localParticipant.audioTracks.forEach((publication:any) => {
+      this.room.localParticipant.audioTracks.forEach((publication: any) => {
         publication.track.enable();
       });
     }
-    
+
   }
 }

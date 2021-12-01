@@ -163,12 +163,12 @@ function trackPublished(trackPublication, participant) {
         } else if ((participant && participant != 'publish') && (track.kind === 'audio')) {
             track.on('disabled', (a) => {
                 /* Hide the associated <video> element and show an avatar image. */
-                console.log("disable",a);
+                console.log("disable", a);
             });
             track.on('enabled', (b) => {
                 /* Hide the avatar image and show the associated <video> element. */
-                console.log("enabled",b);
-              });
+                console.log("enabled", b);
+            });
             const e1 = document.getElementById(participant.sid);
             if (!e1.querySelector('audio')) {
                 e1.appendChild(track.attach());
@@ -233,19 +233,7 @@ async function captureScreen() {
         // Publish screen track to room
         await room.localParticipant.publishTrack(screenTrack, room.localParticipant);
 
-        // When screen sharing is stopped, unpublish the screen track.
-        screenTrack.on('stopped', () => {
-            if (room) {
-                room.localParticipant.unpublishTrack(screenTrack);
-                screenTrack = null;
-                let remoteScreenPreview = document.getElementById('screenshare');
-                let roomVideo = document.querySelector('.user-video video');
-                if (remoteScreenPreview.querySelector('video')) {
-                    roomVideo.style.display = 'block';
-                    remoteScreenPreview.removeChild(remoteScreenPreview.querySelector('video'));
-                }
-            }
-        });
+
 
     } catch (e) {
         alert(e.message);
@@ -276,5 +264,17 @@ function onTrackUnPublished(publishType, publication) {
             roomVideo.style.display = 'block';
             remoteScreenPreview.removeChild(remoteScreenPreview.querySelector('video'));
         }
+    }
+}
+
+function screenShareHandler() {
+    room.localParticipant.unpublishTrack(screenTrack);
+    screenTrack.stop();
+    screenTrack = null;
+    let remoteScreenPreview = document.getElementById('screenshare');
+    let roomVideo = document.querySelector('.user-video video');
+    if (remoteScreenPreview.querySelector('video')) {
+        roomVideo.style.display = 'block';
+        remoteScreenPreview.removeChild(remoteScreenPreview.querySelector('video'));
     }
 }

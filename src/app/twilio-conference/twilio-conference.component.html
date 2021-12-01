@@ -44,9 +44,9 @@
                                 <i class="bi bi-chat-left-text-fill microphone" *ngIf="!showChat"></i>
                             </a>
                         </li>
-                        <li class="call-item" id="screenShareIcon">
-                            <a (click)="shareScreen()">
-                                <i class="bi bi-share-fill" ></i>
+                        <li class="call-item" id="screenShareIcon" >
+                            <a (click)="shareScreen()" [ngClass]="screenShareContainer? 'activeBtn':'inactiveBtn'">
+                                <i class="bi bi-share-fill"></i>
                                 <!-- <i class="bi bi-share-fill" ></i> -->
                             </a>
                         </li>
