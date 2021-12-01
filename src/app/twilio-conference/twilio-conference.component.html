@@ -50,7 +50,12 @@
                                 <!-- <i class="bi bi-share-fill" ></i> -->
                             </a>
                         </li>
-
+                        <li class="call-item">
+                            <a (click)="muteAction()" [ngClass]="muteContainer? 'activeBtn':'inactiveBtn'">
+                                <i class="bi bi-mic-mute-fill microphone" *ngIf="muteContainer"></i>
+                                <i class="bi bi-mic-mute-fill microphone" *ngIf="!muteContainer"></i>
+                            </a>
+                        </li>
                         <li class="call-item">
                             <a (click)="leaveCall()"
                                 style=" background-color: #f06060; color: #fff; transform: rotate(135deg);">

@@ -165,6 +165,14 @@ function trackPublished(trackPublication, participant) {
                 e1.appendChild(track.attach());
             }
         } else if ((participant && participant != 'publish') && (track.kind === 'audio')) {
+            track.on('disabled', (a) => {
+                /* Hide the associated <video> element and show an avatar image. */
+                console.log("helo",a);
+            });
+            track.on('enabled', (b) => {
+                /* Hide the avatar image and show the associated <video> element. */
+                console.log("hiii",b);
+              });
             const e1 = document.getElementById(participant.sid);
             if (!e1.querySelector('audio')) {
                 e1.appendChild(track.attach());
@@ -235,6 +243,12 @@ async function captureScreen() {
             if (room) {
                 room.localParticipant.unpublishTrack(screenTrack);
                 screenTrack = null;
+                let remoteScreenPreview = document.getElementById('screenshare');
+                let roomVideo = document.querySelector('.user-video video');
+                if (remoteScreenPreview.querySelector('video')) {
+                    roomVideo.style.display = 'block';
+                    remoteScreenPreview.removeChild(remoteScreenPreview.querySelector('video'));
+                }
             }
         });
 

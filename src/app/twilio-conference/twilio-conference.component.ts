@@ -20,6 +20,7 @@ export class TwilioConferenceComponent implements OnInit {
   showParticipants = false;
   showChat = false;
   screenShareContainer = false;
+  muteContainer = false;
   localContainer = false;
   routerData: any;
   room: any;
@@ -78,8 +79,22 @@ export class TwilioConferenceComponent implements OnInit {
   async shareScreen() {
     console.log("screen share");
     this.screenShareContainer = (this.screenShareContainer) ? false : true;
-    if(this.screenShareContainer) {
+    if (this.screenShareContainer) {
       await captureScreen();
     }
+  }
+
+  async muteAction() {
+    this.muteContainer = (this.muteContainer) ? false : true;
+    if(this.muteContainer) {
+      this.room.localParticipant.audioTracks.forEach((publication:any) => {
+        publication.track.disable();
+      });
+    } else {
+      this.room.localParticipant.audioTracks.forEach((publication:any) => {
+        publication.track.enable();
+      });
+    }
+    
   }
 }
