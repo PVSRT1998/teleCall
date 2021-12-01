@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CalendarEventService } from '../core/services/calendar-event.service';
 import { TwilioVideoService } from '../core/services/twilio-video.service';
+import { EndCallDialogComponent } from '../end-call-dialog/end-call-dialog.component';
 declare const joinRoom: any;
 declare const callendarEvent: any;
 declare const captureScreen: any;
@@ -13,7 +15,7 @@ declare const captureScreen: any;
 })
 export class TwilioConferenceComponent implements OnInit {
 
-  constructor(public router: Router, public element: ElementRef, public twilioService: TwilioVideoService, public calendarEventService: CalendarEventService) {
+  constructor(public dialog: MatDialog ,public router: Router, public element: ElementRef, public twilioService: TwilioVideoService, public calendarEventService: CalendarEventService) {
     this.routerData = this.router.getCurrentNavigation()?.extras.state;
   }
 
@@ -21,7 +23,6 @@ export class TwilioConferenceComponent implements OnInit {
   showChat = false;
   screenShareContainer = false;
   muteContainer = false;
-  localContainer = false;
   routerData: any;
   room: any;
   allParticipants: any = [];
@@ -30,10 +31,21 @@ export class TwilioConferenceComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.room = await joinRoom(this.routerData);
     if (this.room == "NoRoom") this.router.navigateByUrl('/');
-    if (this.room.participants.size == 0) this.localContainer = true;
   }
 
   async leaveCall() {
+    let dialogResult = this.dialog.open(EndCallDialogComponent, {
+      width: '320px'
+    });
+    dialogResult.afterClosed().subscribe(result => {
+      if (!result) return;
+      if (result && !result.event) return;
+      if (result && result.event) this.endCall();
+    })
+    
+  }
+
+  async endCall() {
     await this.room.localParticipant.tracks.forEach((publication: { track: any; }) => {
       const track = publication.track;
       // stop releases the media element from the browser control
@@ -52,32 +64,16 @@ export class TwilioConferenceComponent implements OnInit {
     this.router.navigateByUrl('/');
   }
 
-
   chatWindow() {
 
     this.showChat = (this.showChat) ? false : true;
-    // this.chatOrParticipantContainer();
   };
 
   participantsWindow() {
     this.showParticipants = (this.showParticipants) ? false : true;
-    // this.chatOrParticipantContainer();
-  };
-
-  chatOrParticipantContainer() {
-    let videoContainer = this.element.nativeElement.querySelector('.my-video');
-
-    if (this.showParticipants || this.showChat) {
-      // videoContainer.style.width = "calc(100% - 320px)";
-      videoContainer.style.transition = "all 0.5s ease";
-    } else {
-      videoContainer.style.width = "100%";
-      // videoContainer.style.transition = "all 0.5s ease";
-    };
   };
 
   async shareScreen() {
-    console.log("screen share");
     this.screenShareContainer = (this.screenShareContainer) ? false : true;
     if (this.screenShareContainer) {
       await captureScreen();

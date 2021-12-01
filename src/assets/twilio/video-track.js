@@ -35,12 +35,10 @@ async function startVideoChat(roomName, token) {
         window.addEventListener("pagehide", tidyUp(room));
 
         room.on('trackPublished', publication => {
-            console.log('trakpublish', publication);
             trackPublished(publication, 'publish');
         });
 
         room.on('trackUnpublished', publication => {
-            console.log('trakunpublish', publication);
             onTrackUnPublished('unpublish', publication);
         });
 
@@ -113,7 +111,7 @@ function participantConnected(participant, participantType) {
         trackPublished(publication, participant);
     });
 
-    participant.on('trackPublished', trackPublished);
+    // participant.on('trackPublished', trackPublished);
 
 }
 
@@ -144,8 +142,6 @@ function participantDisconnected(participant) {
 }
 
 function trackPublished(trackPublication, participant) {
-    console.log(trackPublication);
-    console.log(participant);
     const trackSubscribed = (track) => {
         if (track && track.kind && track.kind === 'data') {
             track.on('message', (data) => {
@@ -167,18 +163,17 @@ function trackPublished(trackPublication, participant) {
         } else if ((participant && participant != 'publish') && (track.kind === 'audio')) {
             track.on('disabled', (a) => {
                 /* Hide the associated <video> element and show an avatar image. */
-                console.log("helo",a);
+                console.log("disable",a);
             });
             track.on('enabled', (b) => {
                 /* Hide the avatar image and show the associated <video> element. */
-                console.log("hiii",b);
+                console.log("enabled",b);
               });
             const e1 = document.getElementById(participant.sid);
             if (!e1.querySelector('audio')) {
                 e1.appendChild(track.attach());
             }
         } else {
-            console.log(trackPublication);
             if (trackPublication.kind == 'video') {
                 let remoteScreenPreview = document.getElementById('screenshare');
                 let roomVideo = document.querySelector('.user-video video');
@@ -281,16 +276,5 @@ function onTrackUnPublished(publishType, publication) {
             roomVideo.style.display = 'block';
             remoteScreenPreview.removeChild(remoteScreenPreview.querySelector('video'));
         }
-    }
-}
-
-function onTrackPublished(publishType, publication) {
-    console.log(publication);
-    if (publication.kind == 'video') {
-        let remoteScreenPreview = document.getElementById('screenshare');
-        let roomVideo = document.querySelector('.user-video video');
-
-        roomVideo.style.display = 'none';
-        remoteScreenPreview.appendChild(publication.track.attach());
     }
 }
