@@ -8,6 +8,7 @@ declare const joinRoom: any;
 declare const callendarEvent: any;
 declare const captureScreen: any;
 declare const screenShareHandler: any;
+declare const createScreenTrack: any;
 
 @Component({
   selector: 'app-twilio-conference',
@@ -28,6 +29,7 @@ export class TwilioConferenceComponent implements OnInit {
   room: any;
   allParticipants: any = [];
   messageInput: any;
+  screenTrack: any;
 
   async ngOnInit(): Promise<void> {
     this.room = await joinRoom(this.routerData);
@@ -68,6 +70,11 @@ export class TwilioConferenceComponent implements OnInit {
   chatWindow() {
 
     this.showChat = (this.showChat) ? false : true;
+    if (this.showChat) {
+      this.element.nativeElement.querySelector('#chat-badge').style.display = "none";
+    } else {
+      this.element.nativeElement.querySelector('#chat-badge').style.display = "";
+    }
   };
 
   participantsWindow() {
@@ -77,7 +84,24 @@ export class TwilioConferenceComponent implements OnInit {
   async shareScreen() {
     this.screenShareContainer = (this.screenShareContainer) ? false : true;
     if (this.screenShareContainer) {
-      await captureScreen();
+      // await captureScreen();
+      try {
+        // Create and preview your local screen.
+        this.screenTrack = await createScreenTrack(720, 1280);
+        // Publish screen track to room
+        await this.room.localParticipant.publishTrack(this.screenTrack, this.room.localParticipant);
+        await captureScreen(this.screenTrack);
+        // When screen sharing is stopped, unpublish the screen track.
+        this.screenTrack.on('stopped', () => {
+          this.screenShareContainer = false;
+          if (this.room) {
+            screenShareHandler();
+          }
+        });
+
+      } catch (e: any) {
+        alert(e.message);
+      }
     } else {
       // When screen sharing is stopped, unpublish the screen track.
       await screenShareHandler();
@@ -97,4 +121,5 @@ export class TwilioConferenceComponent implements OnInit {
     }
 
   }
+
 }

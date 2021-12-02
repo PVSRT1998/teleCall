@@ -39,7 +39,10 @@
                             </a>
                         </li>
                         <li class="call-item">
-                            <a (click)="chatWindow()" [ngClass]="showChat? 'activeBtn':'inactiveBtn'">
+                            <a (click)="chatWindow()" [ngClass]="showChat? 'activeBtn':'inactiveBtn'" style="position: relative;">
+                                <span id="chat-badge" class="position-absolute top-0 translate-middle bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">New alerts</span>
+                                  </span>
                                 <i class="fa bi-chat-left-text-fill microphone" *ngIf="showChat"></i>
                                 <i class="bi bi-chat-left-text-fill microphone" *ngIf="!showChat"></i>
                             </a>

@@ -154,6 +154,10 @@ function trackPublished(trackPublication, participant) {
                 recieveContainer.innerText = dataRecieved.message;
                 recieveParent.appendChild(recieveContainer);
                 document.getElementById('chat-display').appendChild(recieveParent);
+                if (document.getElementById("chat-badge").style.display != 'none') {
+                    let chatBadge = document.getElementById("chat-badge");
+                    chatBadge.style.display = "inline-block";
+                }
             });
         } else if ((participant && participant != 'publish') && (track && track.kind && track.kind === 'video')) {
             const e1 = document.getElementById(participant.sid);
@@ -224,20 +228,8 @@ async function callendarEvent(participant, EventNumber) {
     xmlHttp.send(JSON.stringify(requiredData));
 };
 
-async function captureScreen() {
-    try {
-        // Create and preview your local screen.
-        screenTrack = await createScreenTrack(720, 1280);
-        // let localScreenShare = document.getElementById("local-screenshare");
-        // localScreenShare.appendChild(screenTrack.attach());
-        // Publish screen track to room
-        await room.localParticipant.publishTrack(screenTrack, room.localParticipant);
-
-
-
-    } catch (e) {
-        alert(e.message);
-    }
+async function captureScreen(screenShareTrack) {
+    screenTrack = screenShareTrack;
 }
 
 function createScreenTrack(height, width) {

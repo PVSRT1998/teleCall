@@ -234,3 +234,8 @@
     margin-right: 200px;
 
 }
+
+#chat-badge {
+    padding: 5px !important;
+    display: none;
+}

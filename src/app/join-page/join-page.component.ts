@@ -29,6 +29,11 @@ export class JoinPageComponent implements OnInit {
   allDevicesAllowed: boolean = false;
   ngOnInit() {
     this.connectDevices();
+    setTimeout(() =>{ 
+      if(!this.allDevicesAllowed) {
+        alert("check your connections");
+      }
+     }, 9000)
   }
 
 
